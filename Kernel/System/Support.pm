@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.44 2010-07-30 10:06:28 ub Exp $
+# $Id: Support.pm,v 1.44.2.1 2011-12-16 23:10:18 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.44 $) [1];
+$VERSION = qw($Revision: 1.44.2.1 $) [1];
 
 =head1 NAME
 
@@ -694,8 +694,9 @@ sub SendInfo {
 
     # create mail body
     my $Body = '';
-    for my $Key ( sort keys %Param ) {
-        $Body .= "$Key:$Param{CustomerInfo}->{$Key}\n";
+    for my $Key ( sort keys %{ $Param{CustomerInfo} } ) {
+        my $CustomerInfoValue = $Param{CustomerInfo}->{$Key} || '';
+        $Body .= "$Key:$CustomerInfoValue\n";
     }
 
     # Get the FQDN
@@ -1060,6 +1061,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.44 $ $Date: 2010-07-30 10:06:28 $
+$Revision: 1.44.2.1 $ $Date: 2011-12-16 23:10:18 $
 
 =cut

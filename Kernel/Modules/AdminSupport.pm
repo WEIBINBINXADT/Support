@@ -1,8 +1,8 @@
 # --
 # Kernel/Modules/AdminSupport.pm - show support information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
 # --
-# $Id: AdminSupport.pm,v 1.29 2010-07-30 10:04:32 ub Exp $
+# $Id: AdminSupport.pm,v 1.29.2.1 2011-12-16 23:10:19 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -17,7 +17,7 @@ use warnings;
 use Kernel::System::Support;
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.29 $) [1];
+$VERSION = qw($Revision: 1.29.2.1 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -161,7 +161,7 @@ sub Run {
             );
 
             my $SendMessage = $Self->{SupportObject}->SendInfo(
-                %CustomerInfo,
+                CustomerInfo => \%CustomerInfo,
             );
             if ($SendMessage) {
                 $Output .= $Self->{LayoutObject}->Notify(
