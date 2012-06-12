@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/OTRS.pm - all required otrs information
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OTRS.pm,v 1.41.2.1 2011-11-22 23:42:59 cg Exp $
+# $Id: OTRS.pm,v 1.41.2.2 2012-06-12 22:48:55 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +21,7 @@ use Kernel::System::Package;
 use Kernel::System::Auth;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.41.2.1 $) [1];
+$VERSION = qw($Revision: 1.41.2.2 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -634,9 +634,12 @@ sub _GeneralSystemOverview {
         $TableInfo .= "$Search{$Key}->{Description}=$Search{$Key}->{Result};";
     }
 
-    my $AvgArticlesTicket = $Search{2}->{Result} / $Search{1}->{Result};
-    $AvgArticlesTicket = sprintf( "%.2f", $AvgArticlesTicket );
-    $TableInfo .= "Articles per ticket (avg)=$AvgArticlesTicket;";
+    # only calculate average if we actually have tickets
+    if ( $Search{1}->{Result} && $Search{2}->{Result} ) {
+        my $AvgArticlesTicket = $Search{2}->{Result} / $Search{1}->{Result};
+        $AvgArticlesTicket = sprintf( "%.2f", $AvgArticlesTicket );
+        $TableInfo .= "Articles per ticket (avg)=$AvgArticlesTicket;";
+    }
 
     #  tickets per month (avg)
     my $MonthInSeconds = 2626560;    # 60 * 60 * 24 * 30.4;
