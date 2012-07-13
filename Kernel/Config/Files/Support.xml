@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Application">
-    <CVS>$Id: Support.xml,v 1.15 2012-01-26 15:36:29 mh Exp $</CVS>
+    <CVS>$Id: Support.xml,v 1.16 2012-07-13 12:47:58 mh Exp $</CVS>
     <ConfigItem Name="Frontend::Module###AdminSupport" Required="1" Valid="1">
         <Description Translatable="1">Frontend module registration for the AdminSystemStatus object in the admin area.</Description>
         <Group>Support</Group>
@@ -37,7 +37,6 @@
         <SubGroup>Core::Support</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="TableCheck">1</Item>
                 <Item Key="CurrentTimestampCheck">1</Item>
             </Hash>
         </Setting>
@@ -48,7 +47,6 @@
         <SubGroup>Core::Support</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="TableCheck">1</Item>
                 <Item Key="CurrentTimestampCheck">1</Item>
                 <Item Key="VersionCheck">1</Item>
                 <Item Key="DatabaseSizeCheck">1</Item>
@@ -62,7 +60,6 @@
         <SubGroup>Core::Support</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="TableCheck">1</Item>
                 <Item Key="MaxAllowedPackageCheck">1</Item>
                 <Item Key="QueryCacheSizeCheck">1</Item>
                 <Item Key="UTF8SupportCheck">1</Item>
@@ -81,7 +78,6 @@
         <SubGroup>Core::Support</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="TableCheck">1</Item>
                 <Item Key="NLSDateFormatCheck">1</Item>
                 <Item Key="OracleHomeCheck">1</Item>
                 <Item Key="NLSLangCheck">1</Item>
@@ -96,7 +92,6 @@
         <SubGroup>Core::Support</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="TableCheck">1</Item>
                 <Item Key="DateStyleCheck">1</Item>
                 <Item Key="UTF8ServerCheck">1</Item>
                 <Item Key="UTF8ClientCheck">1</Item>
