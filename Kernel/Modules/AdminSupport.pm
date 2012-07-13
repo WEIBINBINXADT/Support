@@ -2,7 +2,7 @@
 # Kernel/Modules/AdminSupport.pm - show support information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: AdminSupport.pm,v 1.38 2012-01-26 15:36:29 mh Exp $
+# $Id: AdminSupport.pm,v 1.39 2012-07-13 12:48:31 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -17,7 +17,7 @@ use warnings;
 use Kernel::System::Support;
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.38 $) [1];
+$VERSION = qw($Revision: 1.39 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -367,9 +367,6 @@ sub Run {
 
     else {
 
-        # get result of all admin checks
-        my $DataHash = $Self->{SupportObject}->AdminChecksGet();
-
         # create & return output
         my $Output = $Self->{LayoutObject}->Header();
         $Output .= $Self->{LayoutObject}->NavigationBar();
@@ -379,7 +376,11 @@ sub Run {
             Data => \%Param,
         );
 
+        # get result of all admin checks
+        my $DataHash = $Self->{SupportObject}->AdminChecksGet() || {};
+
         for my $Module ( sort keys %{$DataHash} ) {
+
             $Self->{LayoutObject}->Block(
                 Name => 'OverviewModule',
                 Data => {
@@ -390,9 +391,11 @@ sub Run {
             ROWHASH:
             for my $RowHash ( @{ $DataHash->{$Module} } ) {
 
-                next ROWHASH if ( !%{$RowHash} );
+                next ROWHASH if !$RowHash;
+                next ROWHASH if ref $RowHash ne 'HASH';
+                next ROWHASH if !%{$RowHash};
 
-                $RowHash->{BlockStyle} = $RowHash->{BlockStyle} || '';
+                $RowHash->{BlockStyle} ||= '';
 
                 if ( $RowHash->{BlockStyle} ne 'TableDataSimple' ) {
 
@@ -405,13 +408,15 @@ sub Run {
                     );
                 }
                 else {
+
                     $Self->{LayoutObject}->Block(
                         Name => 'OverviewModuleRowTableDataSimple',
                         Data => {
                             %{$RowHash},
                         },
                     );
-                    my %TableValues = split( /[=;]/, $RowHash->{TableInfo} );
+
+                    my %TableValues = split /[=;]/, $RowHash->{TableInfo};
 
                     for my $Item ( sort keys %TableValues ) {
                         $Self->{LayoutObject}->Block(

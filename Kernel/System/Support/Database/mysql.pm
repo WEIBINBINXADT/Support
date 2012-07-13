@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/mysql.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: mysql.pm,v 1.32 2012-01-20 21:14:01 mb Exp $
+# $Id: mysql.pm,v 1.33 2012-07-13 12:48:31 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.32 $) [1];
+$VERSION = qw($Revision: 1.33 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -35,6 +35,7 @@ sub new {
     # create additional objects
     $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
     $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+
     return $Self;
 }
 
@@ -215,6 +216,7 @@ sub _UTF8DatabaseCheck {
         Comment     => $Message,
         Check       => $Check,
     };
+
     return $Data;
 }
 
