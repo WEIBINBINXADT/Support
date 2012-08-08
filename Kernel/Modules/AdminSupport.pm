@@ -2,7 +2,7 @@
 # Kernel/Modules/AdminSupport.pm - show support information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: AdminSupport.pm,v 1.39 2012-07-13 12:48:31 mh Exp $
+# $Id: AdminSupport.pm,v 1.40 2012-08-08 14:18:33 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -17,7 +17,7 @@ use warnings;
 use Kernel::System::Support;
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.39 $) [1];
+$VERSION = qw($Revision: 1.40 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -255,18 +255,12 @@ sub Run {
 
     elsif ( $Self->{Subaction} eq 'BenchmarkSQL' ) {
 
-        my $Insert = $Self->{ParamObject}->GetParam( Param => 'Insert' ) || 10000;
-        my $Update = $Self->{ParamObject}->GetParam( Param => 'Update' ) || 10000;
-        my $Select = $Self->{ParamObject}->GetParam( Param => 'Select' ) || 10000;
-        my $Mode   = $Self->{ParamObject}->GetParam( Param => 'Mode' );
+        my $Mode = $Self->{ParamObject}->GetParam( Param => 'Mode' );
 
         my %Mood = ( 'Fine', ':-)', 'Ok', ':-|', 'Wrong', ':-(' );
 
         my %BenchTest = $Self->{SupportObject}->Benchmark(
-            Insert => $Insert,
-            Update => $Update,
-            Select => $Select,
-            Mode   => $Mode,
+            Mode => $Mode,
         );
 
         $Self->{LayoutObject}->Block(
@@ -284,7 +278,7 @@ sub Run {
                 Key   => 'Insert Time',
                 Time  => $BenchTest{InsertTime},
                 Mood  => $Mood{ $BenchTest{InsertResult} },
-                Value => ( $Insert * $Mode ),
+                Value => ( 10000 * $Mode ),
             },
         );
         $Self->{LayoutObject}->Block(
@@ -301,7 +295,7 @@ sub Run {
                 Key   => 'Update Time',
                 Time  => $BenchTest{UpdateTime},
                 Mood  => $Mood{ $BenchTest{UpdateResult} },
-                Value => ( $Update * $Mode ),
+                Value => ( 10000 * $Mode ),
             },
         );
         $Self->{LayoutObject}->Block(
@@ -318,7 +312,7 @@ sub Run {
                 Key   => 'Select Time',
                 Time  => $BenchTest{SelectTime},
                 Mood  => $Mood{ $BenchTest{SelectResult} },
-                Value => ( $Select * $Mode ),
+                Value => ( 10000 * $Mode ),
             },
         );
         $Self->{LayoutObject}->Block(
@@ -335,7 +329,7 @@ sub Run {
                 Key   => 'Delete Time',
                 Time  => $BenchTest{DeleteTime},
                 Mood  => $Mood{ $BenchTest{DeleteResult} },
-                Value => ( $Insert * $Mode ),
+                Value => ( 10000 * $Mode ),
             },
         );
         $Self->{LayoutObject}->Block(

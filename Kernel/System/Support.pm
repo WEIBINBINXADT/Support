@@ -2,7 +2,7 @@
 # Kernel/System/Support.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.51 2012-08-08 13:53:23 mh Exp $
+# $Id: Support.pm,v 1.52 2012-08-08 14:18:33 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.51 $) [1];
+$VERSION = qw($Revision: 1.52 $) [1];
 
 =head1 NAME
 
@@ -894,10 +894,7 @@ sub Download {
 sub Benchmark {
     my ( $Self, %Param ) = @_;
 
-    my $Insert = $Param{Insert};
-    my $Update = $Param{Update};
-    my $Select = $Param{Select};
-    my $Mode   = $Param{Mode};
+    my $Mode = $Param{Mode};
 
     for ( 1 .. $Mode ) {
         $Self->{"DBObject$_"} = Kernel::System::DB->new( %{$Self} );
@@ -907,21 +904,27 @@ sub Benchmark {
     $Param{UpdateTime} = 0;
     $Param{SelectTime} = 0;
     $Param{DeleteTime} = 0;
+
     my $TimeStart = $Self->{TimeObject}->SystemTime();
-    $Self->_SQLInsert( $Insert, $Mode );
+
+    $Self->_SQLInsert( Mode => $Mode );
     my $Time1 = $Self->{TimeObject}->SystemTime();
-    $Self->_SQLUpdate( $Update, $Mode );
+
+    $Self->_SQLUpdate( Mode => $Mode );
     my $Time2 = $Self->{TimeObject}->SystemTime();
-    $Self->_SQLSelect( $Select, $Mode );
+
+    $Self->_SQLSelect( Mode => $Mode );
     my $Time3 = $Self->{TimeObject}->SystemTime();
-    $Self->_SQLDelete( $Insert, $Mode );
+
+    $Self->_SQLDelete( Mode => $Mode );
     my $Time4 = $Self->{TimeObject}->SystemTime();
+
     $Param{InsertTime} = $Param{InsertTime} + $Time1 - $TimeStart;
     $Param{UpdateTime} = $Param{UpdateTime} + $Time2 - $Time1;
     $Param{SelectTime} = $Param{SelectTime} + $Time3 - $Time2;
     $Param{DeleteTime} = $Param{DeleteTime} + $Time4 - $Time3;
 
-    my $InsertTime = ( $Param{InsertTime} / $Mode ) * ( 10000 / $Insert );
+    my $InsertTime = $Param{InsertTime} / $Mode;
     if ( $InsertTime <= 3 ) {
         $Param{InsertResult} = 'Fine';
     }
@@ -933,7 +936,7 @@ sub Benchmark {
         $Param{InsertShouldTake} = int( $Mode * 5 );
     }
 
-    my $UpdateTime = ( $Param{UpdateTime} / $Mode ) * ( 10000 / $Update );
+    my $UpdateTime = $Param{UpdateTime} / $Mode;
     if ( $UpdateTime <= 5 ) {
         $Param{UpdateResult} = 'Fine';
     }
@@ -945,7 +948,7 @@ sub Benchmark {
         $Param{UpdateShouldTake} = int( $Mode * 9 );
     }
 
-    my $SelectTime = ( $Param{SelectTime} / $Mode ) * ( 10000 / $Select );
+    my $SelectTime = $Param{SelectTime} / $Mode;
     if ( $SelectTime <= 5 ) {
         $Param{SelectResult} = 'Fine';
     }
@@ -957,7 +960,7 @@ sub Benchmark {
         $Param{SelectShouldTake} = int( $Mode * 6 );
     }
 
-    my $DeleteTime = ( $Param{DeleteTime} / $Mode );
+    my $DeleteTime = $Param{DeleteTime} / $Mode;
     if ( $DeleteTime <= 4 ) {
         $Param{DeleteResult} = 'Fine';
     }
@@ -978,13 +981,17 @@ sub Benchmark {
 }
 
 sub _SQLInsert {
-    my ( $Self, $Count, $Mode ) = @_;
+    my ( $Self, %Param ) = @_;
 
-    for my $C ( 1 .. $Count ) {
-        for my $M ( 1 .. $Mode ) {
-            my $Value1 = "aaa$C-$M";
-            my $Value2 = 'bbb';
-            $Self->{"DBObject$M"}->Do(
+    for my $Count ( 1 .. 10_000 ) {
+
+        for my $Mode ( 1 .. $Param{Mode} ) {
+
+            my $Value1 = "aaa$Count-$Mode";
+            my $Value2 = int rand 1000000;
+
+            # insert data
+            $Self->{"DBObject$Mode"}->Do(
                 SQL => 'INSERT INTO support_bench_test (name_a, name_b) values (?, ?)',
                 Bind => [ \$Value1, \$Value2, ],
             );
@@ -994,52 +1001,70 @@ sub _SQLInsert {
 }
 
 sub _SQLUpdate {
-    my ( $Self, $Count, $Mode ) = @_;
+    my ( $Self, %Param ) = @_;
 
-    my $Value1 = '111';
-    my $Value2 = '222';
-    for my $C ( 1 .. $Count ) {
-        for my $M ( 1 .. $Mode ) {
-            my $Value = "aaa$C-$M";
-            $Self->{"DBObject$M"}->Do(
+    for my $Count ( 1 .. 10_000 ) {
+
+        for my $Mode ( 1 .. $Param{Mode} ) {
+
+            my $ValueOld = "aaa$Count-$Mode";
+            my $Value1   = "bbb$Count-$Mode";
+            my $Value2   = int rand 1000000;
+
+            # update data
+            $Self->{"DBObject$Mode"}->Do(
                 SQL => 'UPDATE support_bench_test SET name_a = ?, name_b = ? WHERE name_a = ?',
-                Bind => [ \$Value1, \$Value2, \$Value ],
+                Bind => [ \$Value1, \$Value2, \$ValueOld ],
             );
         }
     }
+
     return 1;
 }
 
 sub _SQLSelect {
-    my ( $Self, $Count, $Mode ) = @_;
+    my ( $Self, %Param ) = @_;
 
-    for my $C ( 1 .. $Count ) {
-        for my $M ( 1 .. $Mode ) {
-            my $Value = $Self->{DBObject}->Quote("aaa$C-$M");
-            $Self->{"DBObject$M"}->Prepare(
-                SQL => "SELECT name_a, name_b FROM support_bench_test WHERE name_a = '$Value'",
+    for my $Count ( 1 .. 10_000 ) {
+
+        for my $Mode ( 1 .. $Param{Mode} ) {
+
+            my $Value = "bbb$Count-$Mode";
+
+            # select the data
+            $Self->{"DBObject$Mode"}->Prepare(
+                SQL  => "SELECT name_a, name_b FROM support_bench_test WHERE name_a = ?",
+                Bind => [ \$Value ],
             );
-            while ( my @Row = $Self->{"DBObject$M"}->FetchrowArray() ) {
+
+            # fetch the data
+            while ( my @Row = $Self->{"DBObject$Mode"}->FetchrowArray() ) {
 
                 # do nothing
             }
         }
     }
+
     return 1;
 }
 
 sub _SQLDelete {
-    my ( $Self, $Count, $Mode ) = @_;
+    my ( $Self, %Param ) = @_;
 
-    for my $C ( 1 .. $Count ) {
-        for my $M ( 1 .. $Mode ) {
-            my $Value = "111$C-$M";
-            $Self->{"DBObject$M"}->Do(
+    for my $Count ( 1 .. 10_000 ) {
+
+        for my $Mode ( 1 .. $Param{Mode} ) {
+
+            my $Value = "bbb$Count-$Mode";
+
+            # delete data
+            $Self->{"DBObject$Mode"}->Do(
                 SQL  => 'DELETE FROM support_bench_test WHERE name_a = ?',
                 Bind => [ \$Value ],
             );
         }
     }
+
     return 1;
 }
 
@@ -1059,6 +1084,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.51 $ $Date: 2012-08-08 13:53:23 $
+$Revision: 1.52 $ $Date: 2012-08-08 14:18:33 $
 
 =cut
