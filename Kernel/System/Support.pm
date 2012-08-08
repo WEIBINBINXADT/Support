@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.50 2011-11-22 17:45:06 cg Exp $
+# $Id: Support.pm,v 1.51 2012-08-08 13:53:23 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.50 $) [1];
+$VERSION = qw($Revision: 1.51 $) [1];
 
 =head1 NAME
 
@@ -969,6 +969,11 @@ sub Benchmark {
         $Param{DeleteShouldTake} = int( $Mode * 5 );
     }
 
+    # remove all rows in the bench test table
+    $Self->{DBObject}->Do(
+        SQL => 'DELETE FROM support_bench_test',
+    );
+
     return %Param;
 }
 
@@ -1054,6 +1059,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.50 $ $Date: 2011-11-22 17:45:06 $
+$Revision: 1.51 $ $Date: 2012-08-08 13:53:23 $
 
 =cut
