@@ -2,7 +2,7 @@
 # Kernel/System/Support/OTRS.pm - all required otrs information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OTRS.pm,v 1.43 2012-01-20 20:35:26 mb Exp $
+# $Id: OTRS.pm,v 1.44 2012-08-08 13:52:25 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +21,7 @@ use Kernel::System::Package;
 use Kernel::System::Auth;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.43 $) [1];
+$VERSION = qw($Revision: 1.44 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -119,6 +119,7 @@ sub _LogCheck {
         Comment     => $Message . $Error,
         Check       => $Check,
     };
+
     return $Data;
 }
 
@@ -523,8 +524,8 @@ sub _InvalidUserLockedTicketSearch {
     }
 
     my $UserString = join ', ', values %LockedTicketUser;
-    $Data->{Comment}   = "These invalid users have locked tickets: $UserString",
-        $Data->{Check} = 'Critical';
+    $Data->{Comment} = "These invalid users have locked tickets: $UserString";
+    $Data->{Check}   = 'Critical';
 
     return $Data;
 }
@@ -588,6 +589,7 @@ sub _DefaultSOAPUserCheck {
             $Data->{Comment} = 'Please set a strong password for SOAP::Password in SysConfig.';
         }
     }
+
     return $Data;
 }
 
@@ -603,6 +605,7 @@ sub _GeneralSystemOverview {
 
     $TableInfo .= 'Product=' . $Self->{ConfigObject}->Get('Product') .
         ' ' . $Self->{ConfigObject}->Get('Version') . ';';
+
     my %Search = (
         1 => {
             TableName   => 'ticket',
@@ -622,15 +625,18 @@ sub _GeneralSystemOverview {
         },
         5 => {
             TableName   => 'groups',
-            Description => "Groups",
+            Description => 'Groups',
         },
     );
 
     for my $Key ( sort keys %Search ) {
+
         $Self->{DBObject}->Prepare( SQL => 'SELECT count(*) from ' . $Search{$Key}->{TableName} );
+
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             $Search{$Key}->{Result} = $Row[0];
         }
+
         $TableInfo .= "$Search{$Key}->{Description}=$Search{$Key}->{Result};";
     }
 
@@ -718,6 +724,7 @@ sub _GeneralSystemOverview {
         BlockStyle  => 'TableDataSimple',
         TableInfo   => $TableInfo,
     };
+
     return $Data;
 }
 
