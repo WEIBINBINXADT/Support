@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.48.2.2 2011-11-22 23:31:52 cg Exp $
+# $Id: Support.pm,v 1.48.2.3 2012-08-17 11:29:33 mh Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.48.2.2 $) [1];
+$VERSION = qw($Revision: 1.48.2.3 $) [1];
 
 =head1 NAME
 
@@ -969,6 +969,11 @@ sub Benchmark {
         $Param{DeleteShouldTake} = int( $Mode * 5 );
     }
 
+    # remove all rows in the bench test table
+    $Self->{DBObject}->Do(
+        SQL => 'DELETE FROM support_bench_test',
+    );
+
     return %Param;
 }
 
@@ -977,8 +982,10 @@ sub _SQLInsert {
 
     for my $C ( 1 .. $Count ) {
         for my $M ( 1 .. $Mode ) {
+
             my $Value1 = "aaa$C-$M";
-            my $Value2 = 'bbb';
+            my $Value2 = int rand 1000000;
+
             $Self->{"DBObject$M"}->Do(
                 SQL => 'INSERT INTO support_bench_test (name_a, name_b) values (?, ?)',
                 Bind => [ \$Value1, \$Value2, ],
@@ -991,14 +998,16 @@ sub _SQLInsert {
 sub _SQLUpdate {
     my ( $Self, $Count, $Mode ) = @_;
 
-    my $Value1 = '111';
-    my $Value2 = '222';
     for my $C ( 1 .. $Count ) {
         for my $M ( 1 .. $Mode ) {
-            my $Value = "aaa$C-$M";
+
+            my $ValueOld = "aaa$C-$M";
+            my $Value1   = "bbb$C-$M";
+            my $Value2   = int rand 1000000;
+
             $Self->{"DBObject$M"}->Do(
                 SQL => 'UPDATE support_bench_test SET name_a = ?, name_b = ? WHERE name_a = ?',
-                Bind => [ \$Value1, \$Value2, \$Value ],
+                Bind => [ \$Value1, \$Value2, \$ValueOld ],
             );
         }
     }
@@ -1010,10 +1019,14 @@ sub _SQLSelect {
 
     for my $C ( 1 .. $Count ) {
         for my $M ( 1 .. $Mode ) {
-            my $Value = $Self->{DBObject}->Quote("aaa$C-$M");
-            $Self->{"DBObject$M"}->Prepare(
-                SQL => "SELECT name_a, name_b FROM support_bench_test WHERE name_a = '$Value'",
+
+            my $Value = "bbb$C-$M";
+
+            $Self->{"DBObject$Mode"}->Prepare(
+                SQL  => "SELECT name_a, name_b FROM support_bench_test WHERE name_a = ?",
+                Bind => [ \$Value ],
             );
+
             while ( my @Row = $Self->{"DBObject$M"}->FetchrowArray() ) {
 
                 # do nothing
@@ -1028,7 +1041,9 @@ sub _SQLDelete {
 
     for my $C ( 1 .. $Count ) {
         for my $M ( 1 .. $Mode ) {
-            my $Value = "111$C-$M";
+
+            my $Value = "bbb$Count-$Mode";
+
             $Self->{"DBObject$M"}->Do(
                 SQL  => 'DELETE FROM support_bench_test WHERE name_a = ?',
                 Bind => [ \$Value ],
@@ -1054,6 +1069,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.48.2.2 $ $Date: 2011-11-22 23:31:52 $
+$Revision: 1.48.2.3 $ $Date: 2012-08-17 11:29:33 $
 
 =cut
