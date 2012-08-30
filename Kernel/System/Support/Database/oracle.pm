@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/oracle.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: oracle.pm,v 1.23 2012-01-26 15:43:07 mh Exp $
+# $Id: oracle.pm,v 1.24 2012-08-30 18:45:21 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.23 $) [1];
+$VERSION = qw($Revision: 1.24 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -109,7 +109,7 @@ sub _NLSLangCheck {
     my $Message = 'No NLS_LANG configuration found.';
     if ( $ENV{NLS_LANG} ) {
         if ( $Self->{ConfigObject}->Get('DefaultCharset') =~ /utf(\-8|8)/i ) {
-            if ( $ENV{NLS_LANG} !~ /utf(\-8|8)/ ) {
+            if ( $ENV{NLS_LANG} !~ /utf(\-8|8)/i ) {
                 $Message = "$ENV{NLS_LANG}, need .utf8 in NLS_LANG (e. g. german_germany.utf8).";
                 $Check   = 'Failed';
             }
