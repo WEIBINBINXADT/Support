@@ -2,7 +2,7 @@
 # Kernel/System/Support/OTRS.pm - all required otrs information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OTRS.pm,v 1.44 2012-08-08 13:52:25 mh Exp $
+# $Id: OTRS.pm,v 1.45 2012-09-04 04:12:06 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +21,7 @@ use Kernel::System::Package;
 use Kernel::System::Auth;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.44 $) [1];
+$VERSION = qw($Revision: 1.45 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -36,7 +36,6 @@ sub new {
     }
 
     # create additional objects
-    $Self->{SupportObject}      = Kernel::System::Support->new( %{$Self} );
     $Self->{UserObject}         = Kernel::System::User->new( %{$Self} );
     $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new( %{$Self} );
     $Self->{TicketObject}       = Kernel::System::Ticket->new( %{$Self} );
