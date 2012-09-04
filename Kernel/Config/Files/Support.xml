@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Application">
-    <CVS>$Id: Support.xml,v 1.16 2012-07-13 12:47:58 mh Exp $</CVS>
+    <CVS>$Id: Support.xml,v 1.17 2012-09-04 04:16:13 cg Exp $</CVS>
     <ConfigItem Name="Frontend::Module###AdminSupport" Required="1" Valid="1">
         <Description Translatable="1">Frontend module registration for the AdminSystemStatus object in the admin area.</Description>
         <Group>Support</Group>
@@ -9,7 +9,7 @@
             <FrontendModuleReg>
                 <Title>Support Info</Title>
                 <Group>admin</Group>
-                <Description>Admin-Support Overview</Description>
+                <Description Translatable="1">Admin-Support Overview.</Description>
                 <NavBarName>Admin</NavBarName>
                 <NavBarModule>
                     <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
