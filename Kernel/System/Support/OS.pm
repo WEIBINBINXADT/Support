@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/OS.pm - all required system information
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OS.pm,v 1.25 2011-08-29 10:29:26 mb Exp $
+# $Id: OS.pm,v 1.26 2012-09-04 04:10:55 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.25 $) [1];
+$VERSION = qw($Revision: 1.26 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -25,9 +25,12 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for my $Object (qw(MainObject ConfigObject LogObject)) {
+    for my $Object (qw(MainObject ConfigObject LogObject LayoutObject)) {
         $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
     }
+
+    # create additional objects
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -83,24 +86,27 @@ sub _DistributionCheck {
             $TmpLine =~ s/\\.*//;
             $TmpLine =~ s/\n/ /g;
             $ReturnHash = {
-                Name        => 'Distribution',
-                Description => "Shows the used distribution.",
-                Comment     => "\"$TmpLine\" is used.",
+                Name        => $Self->{LanguageObject}->Get('Distribution'),
+                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+                Comment     => "\"$TmpLine\" " . $Self->{LanguageObject}->Get('is used.'),
                 Check       => 'OK',
             };
 
         }
         elsif ( $^O =~ /linux/i ) {
-            my $Message = 'Distribution unknown.';
+            my $Message = $Self->{LanguageObject}->Get('Distribution unknown.');
             $Self->{MainObject}->Require('Linux::Distribution');
             my $DistributionName = Linux::Distribution::distribution_name();
             if ($DistributionName) {
                 my $DistributionVersion = Linux::Distribution::distribution_version() || '';
-                $Message = $DistributionName . ' ' . $DistributionVersion . ' is used.';
+                $Message
+                    = $DistributionName . ' '
+                    . $DistributionVersion . ' '
+                    . $Self->{LanguageObject}->Get('is used.');
             }
             $ReturnHash = {
-                Name        => 'Distribution',
-                Description => "Shows the used distribution.",
+                Name        => $Self->{LanguageObject}->Get('Distribution'),
+                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
                 Comment     => $Message,
                 Check       => 'OK',
             };
@@ -114,18 +120,18 @@ sub _DistributionCheck {
                 $TmpLine =~ s/\\.*//;
                 $TmpLine =~ s/\n//g;
                 $ReturnHash = {
-                    Name        => 'Distribution',
-                    Description => "Shows the used distribution.",
-                    Comment     => "\"$TmpLine\" is used.",
+                    Name        => $Self->{LanguageObject}->Get('Distribution'),
+                    Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+                    Comment     => "\"$TmpLine\" " . $Self->{LanguageObject}->Get('is used.'),
                     Check       => 'OK',
                 };
             }
         }
         else {
             $ReturnHash = {
-                Name        => 'Distribution',
-                Description => "Shows the used distribution.",
-                Comment     => "Can\'t determine distribution.",
+                Name        => $Self->{LanguageObject}->Get('Distribution'),
+                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+                Comment     => $Self->{LanguageObject}->Get('Can\'t determine distribution.'),
                 Check       => 'Failed',
             };
         }
@@ -142,17 +148,17 @@ sub _DistributionCheck {
         }
         use strict;
         $ReturnHash = {
-            Name        => 'Distribution',
-            Description => "Shows the used distribution.",
-            Comment     => "@WinVersion is used.",
+            Name        => $Self->{LanguageObject}->Get('Distribution'),
+            Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+            Comment     => "@WinVersion " . $Self->{LanguageObject}->Get('is used.'),
             Check       => 'OK',
         };
     }
     elsif ( $^O =~ /freebsd/i ) {
         $ReturnHash = {
-            Name        => 'Distribution',
-            Description => "Shows the used distribution.",
-            Comment     => "$^O is used.",
+            Name        => $Self->{LanguageObject}->Get('Distribution'),
+            Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+            Comment     => "$^O " . $Self->{LanguageObject}->Get('is used.'),
             Check       => 'OK',
         };
     }
@@ -177,18 +183,18 @@ sub _KernelInfoCheck {
                 $TmpLine =~ s/\s+$//g;
                 $TmpLine =~ s/^\s+//g;
                 $ReturnHash = {
-                    Name        => 'Kernel Version',
-                    Description => "Shows the used Kernel version.",
-                    Comment     => "\"$TmpLine\" is used.",
+                    Name        => $Self->{LanguageObject}->Get('Kernel Version'),
+                    Description => $Self->{LanguageObject}->Get('Shows the used Kernel version.'),
+                    Comment     => "\"$TmpLine\" " . $Self->{LanguageObject}->Get('is used.'),
                     Check       => 'OK',
                 };
             }
         }
         else {
             $ReturnHash = {
-                Name        => 'Kernel Version',
-                Description => "Shows the used Kernel version.",
-                Comment     => "Can\'t execute uname -a...",
+                Name        => $Self->{LanguageObject}->Get('Kernel Version'),
+                Description => $Self->{LanguageObject}->Get('Shows the used Kernel version.'),
+                Comment     => $Self->{LanguageObject}->Get("Can\'t execute uname -a..."),
                 Check       => 'Critical',
             };
         }
@@ -210,29 +216,32 @@ sub _PerlCheck {
     if ( $Version =~ /(\d+)\.(\d+)\.(\d+)/i ) {
         if ( $1 <= 5 && $2 <= 8 && $3 <= 7 ) {
             $ReturnHash = {
-                Name        => 'PerlCheck',
-                Description => "Check Perl version.",
+                Name        => $Self->{LanguageObject}->Get('PerlCheck'),
+                Description => $Self->{LanguageObject}->Get('Check Perl version.'),
                 Comment =>
-                    "Your Perl $Version ($OS) is to old, you should upgrade to Perl 5.8.8 or higher.",
+                    $Self->{LanguageObject}->Get('Your Perl') . " $Version ($OS) " .
+                    $Self->{LanguageObject}
+                    ->Get('is to old, you should upgrade to Perl 5.8.8 or higher.'),
                 Check => 'Failed',
             };
 
         }
         else {
             $ReturnHash = {
-                Name        => 'PerlCheck',
-                Description => "Check Perl Version.",
-                Comment     => "Perl $Version ($OS) is used.",
+                Name        => $Self->{LanguageObject}->Get('PerlCheck'),
+                Description => $Self->{LanguageObject}->Get('Check Perl version.'),
+                Comment     => "Perl $Version ($OS) " . $Self->{LanguageObject}->Get('is used.'),
                 Check       => 'OK',
             };
         }
     }
     else {
         $ReturnHash = {
-            Name        => 'PerlCheck',
-            Description => "Check Perl Version.",
-            Comment     => "Unable to parse version string ($Version / $OS).",
-            Check       => 'Critical',
+            Name        => $Self->{LanguageObject}->Get('PerlCheck'),
+            Description => $Self->{LanguageObject}->Get('Check Perl version.'),
+            Comment     => $Self->{LanguageObject}->Get('Unable to parse version string')
+                . " ($Version / $OS).",
+            Check => 'Critical',
         };
     }
     return $ReturnHash;
@@ -261,10 +270,12 @@ sub _PerlModulesCheck {
             )
         {
             $ReturnHash = {
-                Name        => 'PerlModulesCheck',
-                Description => "Check Perl Modules installed.",
+                Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
+                Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
                 Comment =>
-                    "There is an error in your installed perl modules configuration. Please contact your administrator."
+                    $Self->{LanguageObject}->Get(
+                    'There is an error in your installed perl modules configuration. Please contact your administrator.'
+                    )
                 ,
                 Check         => 'Failed',
                 BlockStyle    => 'TextArea',
@@ -274,9 +285,10 @@ sub _PerlModulesCheck {
         }
         else {
             $ReturnHash = {
-                Name          => 'PerlModulesCheck',
-                Description   => "Check Perl Modules installed.",
-                Comment       => "All Perl modules needed are currently installed.",
+                Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
+                Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
+                Comment     => $Self->{LanguageObject}
+                    ->Get('All Perl modules needed are currently installed.'),
                 Check         => 'OK',
                 BlockStyle    => 'TextArea',
                 ContentString => $TmpLog,
@@ -285,9 +297,9 @@ sub _PerlModulesCheck {
     }
     else {
         $ReturnHash = {
-            Name        => 'PerlModulesCheck',
-            Description => "Check Perl Modules installed.",
-            Comment     => "Unable to check Perl modules.",
+            Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
+            Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
+            Comment     => $Self->{LanguageObject}->Get('Unable to check Perl modules.'),
             Check       => 'Critical',
         };
     }
@@ -329,24 +341,26 @@ sub _MemorySwapCheck {
             close($MemInfoFile);
 
             # build return hash
-            my $Describtion
-                = "The Host System has: \n"
-                . int( $MemTotal / 1024 )
-                . " MB Memory total \n"
-                . int( $MemFree / 1024 )
-                . " MB Memory free \n"
-                . int( $SwapTotal / 1024 )
-                . " MB Swap total \n"
-                . int( $SwapFree / 1024 )
-                . " MB Swap free ";
+            my $Description
+                = $Self->{LanguageObject}->Get('The Host System has') . ": \n"
+                . int( $MemTotal / 1024 ) . ' '
+                . $Self->{LanguageObject}->Get('MB Memory total') . " \n"
+                . int( $MemFree / 1024 ) . ' '
+                . $Self->{LanguageObject}->Get('MB Memory free') . " \n"
+                . int( $SwapTotal / 1024 ) . ' '
+                . $Self->{LanguageObject}->Get('MB Swap total') . " \n"
+                . int( $SwapFree / 1024 ) . ' '
+                . $Self->{LanguageObject}->Get('MB Swap free');
 
             if ( !$SwapTotal ) {
                 $ReturnHash = {
-                    Name        => 'Memory Swap Check',
-                    Description => "A Memory Check. We try to find out if "
-                        . "SwapFree : SwapTotal < 60 % "
-                        . " or if more than 200 MB Swap is used.",
-                    Comment => "No Swap enabled!",
+                    Name        => $Self->{LanguageObject}->Get('Memory Swap Check'),
+                    Description => $Self->{LanguageObject}->Get(
+                        'A Memory Check. We try to find out if '
+                            . 'SwapFree : SwapTotal < 60 % '
+                            . 'or if more than 200 MB Swap is used.'
+                    ),
+                    Comment => $Self->{LanguageObject}->Get('No Swap enabled!'),
                     Check   => 'Critical',
                 };
             }
@@ -356,21 +370,25 @@ sub _MemorySwapCheck {
                 )
             {
                 $ReturnHash = {
-                    Name        => 'Memory Swap Check',
-                    Description => "A Memory Check. We try to find out if "
-                        . "SwapFree : SwapTotal < 60 % "
-                        . " or if more than 200 MB Swap is used.",
-                    Comment => "$Describtion",
+                    Name        => $Self->{LanguageObject}->Get('Memory Swap Check'),
+                    Description => $Self->{LanguageObject}->Get(
+                        'A Memory Check. We try to find out if '
+                            . 'SwapFree : SwapTotal < 60 % '
+                            . 'or if more than 200 MB Swap is used.'
+                    ),
+                    Comment => "$Description",
                     Check   => 'OK',
                 };
             }
             else {
                 $ReturnHash = {
-                    Name        => 'Memory Swap Check',
-                    Description => "A Memory Check. We try to find out if "
-                        . "SwapFree : SwapTotal < 60 % "
-                        . " or if more than 200 MB Swap is used.",
-                    Comment => "$Describtion",
+                    Name        => $Self->{LanguageObject}->Get('Memory Swap Check'),
+                    Description => $Self->{LanguageObject}->Get(
+                        'A Memory Check. We try to find out if '
+                            . 'SwapFree : SwapTotal < 60 % '
+                            . 'or if more than 200 MB Swap is used.'
+                    ),
+                    Comment => "$Description",
                     Check   => 'Failed',
                 };
             }
@@ -425,30 +443,34 @@ sub _CPULoadCheck {
         if (@SplitArray) {
 
             # build return hash
-            my $Describtion
-                = "The Host System has a load: \n"
-                . $SplitArray[0]
-                . " in the last 1 minute \n"
-                . $SplitArray[1]
-                . " in the last 5 minutes \n"
-                . $SplitArray[2]
-                . " in the last 15 minutes";
+            my $Description
+                = $Self->{LanguageObject}->Get('The Host System has a load') . ": \n"
+                . $SplitArray[0] . ' '
+                . $Self->{LanguageObject}->Get('in the last 1 minute') . " \n"
+                . $SplitArray[1] . ' '
+                . $Self->{LanguageObject}->Get('in the last 5 minutes') . " \n"
+                . $SplitArray[2] . ' '
+                . $Self->{LanguageObject}->Get('in the last 15 minutes');
 
             if ( $SplitArray[2] < '1.00' ) {
                 $ReturnHash = {
-                    Name        => 'CPU Load',
-                    Description => "A CPU load check. We try to find out if "
-                        . "the system load in the last 15 minutes > 1.",
-                    Comment => "$Describtion",
+                    Name        => $Self->{LanguageObject}->Get('CPU Load'),
+                    Description => $Self->{LanguageObject}->Get(
+                        'A CPU load check. We try to find out if '
+                            . 'the system load in the last 15 minutes > 1.'
+                    ),
+                    Comment => "$Description",
                     Check   => 'OK',
                 };
             }
             else {
                 $ReturnHash = {
-                    Name        => 'CPU Load',
-                    Description => "A CPU load check. We try to find out if "
-                        . "the system load in the last 15 minutes < 1.",
-                    Comment => "$Describtion",
+                    Name        => $Self->{LanguageObject}->Get('CPU Load'),
+                    Description => $Self->{LanguageObject}->Get(
+                        'A CPU load check. We try to find out if '
+                            . 'the system load in the last 15 minutes < 1.'
+                    ),
+                    Comment => "$Description",
                     Check   => 'Failed',
                 };
             }
@@ -494,15 +516,15 @@ sub _DiskUsageCheck {
             }
             close($In);
             if ( $Check eq 'Failed' ) {
-                $Message = "Disk is full ($Message).";
+                $Message = $Self->{LanguageObject}->Get('Disk is full') . " ($Message).";
             }
             else {
-                $Message = "Disk usage ($Message).";
+                $Message = $Self->{LanguageObject}->Get('Disk usage') . " ($Message).";
             }
         }
         $Data = {
-            Name        => 'Disk Usage',
-            Description => "Check disk usage.",
+            Name        => $Self->{LanguageObject}->Get('Disk Usage'),
+            Description => $Self->{LanguageObject}->Get('Check disk usage.'),
             Comment     => $Message,
             Check       => $Check,
         };

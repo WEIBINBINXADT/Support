@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Database.pm - all required system information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Database.pm,v 1.12 2010-02-09 19:54:17 ub Exp $
+# $Id: Database.pm,v 1.13 2012-09-04 04:10:09 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
+$VERSION = qw($Revision: 1.13 $) [1];
 
 =head1 NAME
 
@@ -79,7 +79,7 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
@@ -171,12 +171,12 @@ This software is part of the OTRS project (http://otrs.org/).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =cut
 
 =head1 VERSION
 
-$Revision: 1.12 $ $Date: 2010-02-09 19:54:17 $
+$Revision: 1.13 $ $Date: 2012-09-04 04:10:09 $
 
 =cut

@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/mysql.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: mysql.pm,v 1.33 2012-07-13 12:48:31 mh Exp $
+# $Id: mysql.pm,v 1.34 2012-09-04 04:07:50 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.33 $) [1];
+$VERSION = qw($Revision: 1.34 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,13 +28,14 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
     # create additional objects
-    $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+    $Self->{XMLObject}      = Kernel::System::XML->new( %{$Self} );
+    $Self->{TimeObject}     = Kernel::System::Time->new( %{$Self} );
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -79,7 +80,7 @@ sub _VersionCheck {
 
     # version check
     my $Check   = 'Failed';
-    my $Message = 'No MySQL version found.';
+    my $Message = $Self->{LanguageObject}->Get('No MySQL version found.');
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
 
@@ -95,17 +96,19 @@ sub _VersionCheck {
             }
             else {
                 $Check   = 'Failed';
-                $Message = "MySQL version $Row[1], you should use 4.1 or higher.";
+                $Message = $Self->{LanguageObject}->Get('MySQL version') .
+                    " $Row[1], " .
+                    $Self->{LanguageObject}->Get('you should use 4.1 or higher.');
             }
         }
         else {
             $Check   = 'Critical';
-            $Message = "Unknown MySQL version $Row[1]";
+            $Message = $Self->{LanguageObject}->Get('Unknown MySQL version') . " $Row[1].";
         }
     }
     my $Data = {
-        Name        => 'Database Version',
-        Description => 'Check database version.',
+        Name        => $Self->{LanguageObject}->Get('Database Version.'),
+        Description => $Self->{LanguageObject}->Get('Check database version.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -121,9 +124,9 @@ sub _UTF8SupportCheck {
     }
 
     my $Data = {
-        Name        => 'Database (utf8)',
-        Description => 'Check database utf8 support.',
-        Comment     => 'No database version found.',
+        Name        => $Self->{LanguageObject}->Get('Database (utf8)'),
+        Description => $Self->{LanguageObject}->Get('Check database utf8 support.'),
+        Comment     => $Self->{LanguageObject}->Get('No database version found.'),
         Check       => 'Critical',
     };
 
@@ -138,14 +141,15 @@ sub _UTF8SupportCheck {
 
         # find the version number
         if ( $Row[1] =~ /^(4\.(1|2|3|4|5)|5\.|6\.|7\.)/ ) {
-            $Data->{Comment} = 'Your database version supports utf8.';
+            $Data->{Comment} = $Self->{LanguageObject}->Get('Your database version supports utf8.');
             $Data->{Check}   = 'OK';
 
             next;
         }
 
-        $Data->{Comment} = "utf8 is not supported (MySQL $Row[1]).";
-        $Data->{Check}   = 'Failed';
+        $Data->{Comment}
+            = $Self->{LanguageObject}->Get('utf8 is not supported') . "(MySQL $Row[1]).";
+        $Data->{Check} = 'Failed';
     }
 
     return $Data;
@@ -156,7 +160,7 @@ sub _UTF8ClientCheck {
     my $Data = {};
 
     my $Check   = 'Failed';
-    my $Message = 'No character_set_client setting found.';
+    my $Message = $Self->{LanguageObject}->Get('No character_set_client setting found.');
 
     # utf-8 client check
     if ( $Self->{ConfigObject}->Get('DefaultCharset') !~ /utf(\-8|8)/i ) {
@@ -172,18 +176,20 @@ sub _UTF8ClientCheck {
 
         if ( $Row[1] =~ /utf8/ ) {
             $Check   = 'OK';
-            $Message = "Your client connection is $Row[1].";
+            $Message = $Self->{LanguageObject}->Get('Your client connection is') . " $Row[1].";
 
             next;
         }
-        $Message = "Found character_set_client, but it's set to $Row[1] (needs to be utf8).";
+        $Message = $Self->{LanguageObject}->Get("Found character_set_client, but it's set to") .
+            " $Row[1] (" . $Self->{LanguageObject}->Get('needs to be utf8') . ').';
     }
 
     $Data = {
-        Name        => 'Client Connection (utf8)',
-        Description => 'Check if the client uses utf8 for the connection.',
-        Check       => $Check,
-        Comment     => $Message,
+        Name => $Self->{LanguageObject}->Get('Client Connection (utf8)'),
+        Description =>
+            $Self->{LanguageObject}->Get('Check if the client uses utf8 for the connection.'),
+        Check   => $Check,
+        Comment => $Message,
     };
 
     return $Data;
@@ -197,22 +203,25 @@ sub _UTF8DatabaseCheck {
         return;
     }
     my $Check   = 'Failed';
-    my $Message = 'No character_set_database setting found.';
+    my $Message = $Self->{LanguageObject}->Get('No character_set_database setting found.');
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^character_set_database/i ) {
             $Message
-                = "Character_set_database setting found, but it's set to $Row[1] (needs to be utf8).";
+                = $Self->{LanguageObject}
+                ->Get("Character_set_database setting found, but it's set to") .
+                " $Row[1] (" . $Self->{LanguageObject}->Get('needs to be utf8') . ').';
             if ( $Row[1] =~ /utf8/ ) {
-                $Check   = 'OK';
-                $Message = "Your database character setting is $Row[1].";
+                $Check = 'OK';
+                $Message
+                    = $Self->{LanguageObject}->Get('Your database charset setting is') . " $Row[1]";
             }
         }
     }
 
     my $Data = {
-        Name        => 'Database Character (utf8)',
-        Description => 'Check if the database uses utf8 as charset.',
+        Name        => $Self->{LanguageObject}->Get('Database Charset (utf8)'),
+        Description => $Self->{LanguageObject}->Get('Check if the database uses utf8 as charset.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -243,17 +252,18 @@ sub _UTF8TableCheck {
         }
         if ($Message) {
             $Check   = 'Failed';
-            $Message = "Invalid charset collation for: $Message";
+            $Message = $Self->{LanguageObject}->Get('Invalid charset collation for') . ": $Message";
         }
         else {
             $Check   = 'OK';
             $Message = $Message2;
         }
         $Data = {
-            Name        => 'Table Collation (utf8)',
-            Description => 'Check the utf8 table charset collation.',
-            Comment     => "Your charset collation is set to $Message.",
-            Check       => $Check,
+            Name        => $Self->{LanguageObject}->Get('Table Collation (utf8)'),
+            Description => $Self->{LanguageObject}->Get('Check the utf8 table charset collation.'),
+            Comment     => $Self->{LanguageObject}->Get('Your charset collation is set to')
+                . " $Message.",
+            Check => $Check,
         };
         return $Data;
     }
@@ -266,25 +276,28 @@ sub _MaxAllowedPackageCheck {
 
     # max_allowed_packet check
     my $Check   = 'Failed';
-    my $Message = 'No "max_allowed_packet" configuration found.';
+    my $Message = $Self->{LanguageObject}->Get('No "max_allowed_packet" configuration found.');
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^max_allowed_packet/i ) {
             if ( $Row[1] < 1024 * 1024 * 7 ) {
                 $Row[1]  = int( $Row[1] / 1024 / 1024 );
                 $Check   = 'Failed';
-                $Message = "\"max_allowed_packet\" should be higher than 7 MB (it's $Row[1] MB).";
+                $Message = '"max_allowed_packet" ' .
+                    $Self->{LanguageObject}->Get("should be higher than 7 MB (it's")
+                    . " $Row[1] MB).";
             }
             else {
                 $Row[1]  = int( $Row[1] / 1024 / 1024 );
                 $Check   = 'OK';
-                $Message = "Your configuration setting is $Row[1] MB.";
+                $Message = $Self->{LanguageObject}->Get('Your configuration setting is')
+                    . " $Row[1] MB.";
             }
         }
     }
     $Data = {
-        Name        => 'Max Package Size',
-        Description => 'Check "max_allowed_packet" setting.',
+        Name        => $Self->{LanguageObject}->Get('Max Package Size'),
+        Description => $Self->{LanguageObject}->Get('Check "max_allowed_packet" setting.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -297,20 +310,23 @@ sub _QueryCacheSizeCheck {
 
     # query_cache_size check
     my $Check   = 'Failed';
-    my $Message = 'No "query_cache_size" setting found.';
+    my $Message = $Self->{LanguageObject}->Get('No "query_cache_size" setting found.');
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^query_cache_size/i ) {
             if ( !$Row[1] ) {
                 $Check = 'Critical';
                 $Message
-                    = 'The setting "query_cache_size" should be used.';
+                    = $Self->{LanguageObject}
+                    ->Get('The setting "query_cache_size" should be used.');
             }
             elsif ( $Row[1] < 1024 * 1024 * 10 ) {
                 $Row[1] = int( $Row[1] / 1024 / 1024 );
                 $Check = 'Critical';
                 $Message
-                    = "The setting \"query_cache_size\" should be higher than 10 MB (it's $Row[1] MB).";
+                    = $Self->{LanguageObject}
+                    ->Get("The setting 'query_cache_size' should be higher than 10 MB (it's")
+                    . " $Row[1] MB).";
             }
             else {
                 $Row[1]  = int( $Row[1] / 1024 / 1024 );
@@ -320,8 +336,8 @@ sub _QueryCacheSizeCheck {
         }
     }
     $Data = {
-        Name        => 'Query Cache Size',
-        Description => 'Check "query_cache_size" setting.',
+        Name        => $Self->{LanguageObject}->Get('Query Cache Size'),
+        Description => $Self->{LanguageObject}->Get('Check "query_cache_size" setting.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -351,19 +367,23 @@ sub _CurrentTimestampCheck {
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
         $Check = 'OK';
         $Message
-            = 'There is no difference between application server time and database server time.';
+            = $Self->{LanguageObject}->Get(
+            'There is no difference between application server time and database server time.'
+            );
     }
     else {
         $Check = 'Failed';
         $Message
-            = 'There is a material difference ('
+            = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
-            . " seconds) between application server ($TimeApplicationServer) and database server ($TimeDatabaseServer) time.";
+            . $Self->{LanguageObject}->Get(' seconds) between application server (')
+            . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
+            . $TimeDatabaseServer . $Self->{LanguageObject}->Get(') time.');
     }
 
     $Data = {
-        Name        => 'Current Timestamp Check',
-        Description => 'Check "System Time" vs "Current Timestamp".',
+        Name        => $Self->{LanguageObject}->Get('Current Timestamp Check'),
+        Description => $Self->{LanguageObject}->Get('Check "System Time" vs "Current Timestamp".'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -411,7 +431,8 @@ sub _TableCheck {
                         push @Problems, "$Table->{Name}\[$Status\]";
                     }
                     else {
-                        push @Problems, "$Table->{Name}\[unable to check table\]";
+                        push @Problems, "$Table->{Name}\["
+                            . $Self->{LanguageObject}->Get('unable to check table') . "\]";
                     }
                 }
             }
@@ -420,29 +441,29 @@ sub _TableCheck {
             }
             else {
                 $Check   = 'OK';
-                $Message = "$Count tables checked.";
+                $Message = "$Count " . $Self->{LanguageObject}->Get('tables checked.');
             }
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
                 Comment     => $Message,
                 Check       => $Check,
             };
         }
         else {
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
-                Comment     => "Can't open file $File: $!",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+                Comment     => $Self->{LanguageObject}->Get("Can't open file") . " $File: $!",
                 Check       => 'Critical',
             };
         }
     }
     else {
         $Data = {
-            Name        => 'Table Check',
-            Description => 'Check existing framework tables.',
-            Comment     => "Can't find file $File!",
+            Name        => $Self->{LanguageObject}->Get('Table Check'),
+            Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+            Comment     => $Self->{LanguageObject}->Get("Can't find file") . " $File!",
             Check       => 'Critical',
         };
     }
@@ -455,7 +476,7 @@ sub _DatabaseSizeCheck {
 
     # calculate and display database size
     my $Check   = 'Failed';
-    my $Message = 'Could not determine database size.';
+    my $Message = $Self->{LanguageObject}->Get('Could not determine database size.');
     my $DBName;
 
     $Self->{DBObject}->Prepare(
@@ -479,18 +500,18 @@ sub _DatabaseSizeCheck {
 
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             if ( $Row[0] ) {
-                $Message = "Database size is $Row[0] GB.";
+                $Message = $Self->{LanguageObject}->Get('Database size is') . " $Row[0] GB.";
                 $Check   = 'OK';
             }
         }
     }
     else {
-        $Message = 'Could not determine database name.';
+        $Message = $Self->{LanguageObject}->Get('Could not determine database name.');
     }
 
     $Data = {
-        Name        => 'Database Size',
-        Description => 'Size of the current database.',
+        Name        => $Self->{LanguageObject}->Get('Database Size'),
+        Description => $Self->{LanguageObject}->Get('Size of the current database.'),
         Comment     => $Message,
         Check       => $Check,
     };

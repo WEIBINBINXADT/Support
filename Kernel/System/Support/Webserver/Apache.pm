@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Webserver/Apache.pm - all required system information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Apache.pm,v 1.14 2010-02-09 21:29:16 ub Exp $
+# $Id: Apache.pm,v 1.15 2012-09-04 04:09:03 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.14 $) [1];
+$VERSION = qw($Revision: 1.15 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -25,9 +25,12 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject)) {
+    for (qw(ConfigObject LogObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
+
+    # create additional objects
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -75,15 +78,15 @@ sub _ApacheVersionCheck {
     my $Message = '';
     if ( $ENV{SERVER_SOFTWARE} ) {
         $Check   = 'OK';
-        $Message = "You are running $ENV{SERVER_SOFTWARE}.";
+        $Message = $Self->{LanguageObject}->Get('You are running') . " $ENV{SERVER_SOFTWARE}.";
     }
     else {
         $Check   = 'Failed';
-        $Message = 'Could not determine Apache version.';
+        $Message = $Self->{LanguageObject}->Get('Could not determine Apache version.');
     }
     $Data = {
-        Name        => 'Apache Version',
-        Description => 'Display web server version.',
+        Name        => $Self->{LanguageObject}->Get('Apache Version'),
+        Description => $Self->{LanguageObject}->Get('Display web server version.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -110,7 +113,9 @@ sub _ApacheDBICheck {
         if ( !$ApacheDBI ) {
             $Check = 'Critical';
             $Message
-                = 'Apache::DBI should be used to get a better performance (pre-establish database connections).';
+                = $Self->{LanguageObject}->Get(
+                'Apache::DBI should be used to get a better performance (pre-establish database connections).'
+                );
         }
         else {
             $Check   = 'OK';
@@ -124,7 +129,7 @@ sub _ApacheDBICheck {
     }
     $Data = {
         Name        => 'Apache::DBI',
-        Description => 'Check if the system uses Apache::DBI.',
+        Description => $Self->{LanguageObject}->Get('Check if the system uses Apache::DBI.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -156,7 +161,9 @@ sub _ApacheReloadCheck {
                 if ( !$ApacheReload ) {
                     $Check = 'Info';
                     $Message
-                        = 'Apache::Reload or Apache2::Reload should be used as PerlModule and PerlInitHandler to prevent web server restarts when installing and upgrading modules.';
+                        = $Self->{LanguageObject}->Get(
+                        'Apache::Reload or Apache2::Reload should be used as PerlModule and PerlInitHandler to prevent web server restarts when installing and upgrading modules.'
+                        );
                 }
                 else {
                     $Check   = 'OK';
@@ -172,9 +179,10 @@ sub _ApacheReloadCheck {
     }
     $Data = {
         Name        => 'Apache::Reload',
-        Description => 'Check if the system uses Apache::Reload/Apache2::Reload.',
-        Comment     => $Message,
-        Check       => $Check,
+        Description => $Self->{LanguageObject}
+            ->Get('Check if the system uses Apache::Reload/Apache2::Reload.'),
+        Comment => $Message,
+        Check   => $Check,
     };
     return $Data;
 }
@@ -192,11 +200,15 @@ sub _CGIAcceleratorCheck {
         if ( $ENV{MOD_PERL} =~ /\/1.99/ ) {
             $Check = 'Critical';
             $Message
-                = "You use a beta version of mod_perl ($ENV{MOD_PERL}), you should upgrade to a stable version.";
+                = $Self->{LanguageObject}->Get('You use a beta version of mod_perl')
+                . " ($ENV{MOD_PERL}), "
+                .
+                $Self->{LanguageObject}->Get('you should upgrade to a stable version.');
         }
         elsif ( $ENV{MOD_PERL} =~ /\/1/ ) {
             $Check   = 'Critical';
-            $Message = "You should update mod_perl to 2.x ($ENV{MOD_PERL}).";
+            $Message = $Self->{LanguageObject}->Get('You should update mod_perl to')
+                . " 2.x ($ENV{MOD_PERL}).";
         }
         else {
             $Check   = 'OK';
@@ -205,15 +217,16 @@ sub _CGIAcceleratorCheck {
     }
     elsif ( $ENV{SERVER_SOFTWARE} =~ /fastcgi/i ) {
         $Check   = 'OK';
-        $Message = 'You are using FastCGI.';
+        $Message = $Self->{LanguageObject}->Get('You are using FastCGI.');
     }
     else {
         $Check   = 'Critical';
-        $Message = 'You should use FastCGI or mod_perl to increase your performance.';
+        $Message = $Self->{LanguageObject}
+            ->Get('You should use FastCGI or mod_perl to increase your performance.');
     }
     $Data = {
-        Name        => 'CGI Accelerator',
-        Description => 'Check for CGI Accelerator.',
+        Name        => $Self->{LanguageObject}->Get('CGI Accelerator'),
+        Description => $Self->{LanguageObject}->Get('Check for CGI Accelerator.'),
         Comment     => $Message,
         Check       => $Check,
     };
