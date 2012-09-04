@@ -1,8 +1,8 @@
 # --
 # AdminSupport.dtl - provides HTML form for AdminSupport
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: AdminSupport.dtl,v 1.33 2011-11-22 18:10:45 cg Exp $
+# $Id: AdminSupport.dtl,v 1.34 2012-09-04 04:06:12 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -54,7 +54,7 @@
                 <div class="WidgetAction Toggle">
                     <a title="Toggle this widget" href="#"></a>
                 </div>
-                <h2>$QData{"Module"}</h2>
+                <h2>$Text{"$Data{"Module"}"}</h2>
             </div>
             <div class="Content">
 <!-- dtl:block:OverviewModuleRow -->
