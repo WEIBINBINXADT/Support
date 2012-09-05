@@ -2,7 +2,7 @@
 # Kernel/Language/de_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: de_Support.pm,v 1.2 2012-09-04 04:17:03 cg Exp $
+# $Id: de_Support.pm,v 1.3 2012-09-05 04:39:45 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +21,7 @@ sub Data {
     $Self->{Translation}->{'Start support'} = '';
     $Self->{Translation}->{'SQL benchmark'} = '';
     $Self->{Translation}->{'For quick help please submit your system information and create a support ticket at the vendor\'s site.'} =
-        'Para ayuda rapida por favor suministre su información y cree un ticket de soporte en el sitio del proveedor';
+        '';
     $Self->{Translation}->{'For more info please check'} = '';
     $Self->{Translation}->{'Admin Support Info'} = '';
     $Self->{Translation}->{'Admin-Support Overview.'} = '';
@@ -29,12 +29,12 @@ sub Data {
     $Self->{Translation}->{'Vendor Support'} = '';
     $Self->{Translation}->{'Bugzilla ID'} = '';
     $Self->{Translation}->{'If you\'ve already added a Bugzilla report at bugs.otrs.org, please add your Bugzilla ID here.'} =
-        'Si ya ha agregado un reporte de error en bugs.otrs.org, por favor agregaue su identificador de Bugzilla aqui.';
+        '';
     $Self->{Translation}->{'Service Subscription'} = '';
     $Self->{Translation}->{'Please recommend me a Service Subscription to optimize my OTRS'} =
-        'Por favor recomiendeme un servicio de suscripción para optimizar mi instalación de OTRS';
+        '';
     $Self->{Translation}->{'Can\'t create support package, because you work currently with the system user root@localhost and your admin email address is not yet configured. Please define the admin email setting in the SysConfig module and don\'t use the user root@localhost for working with OTRS.'} =
-        'No es posible crear un paquete de soporte, debido a que se encuetra actualmente utilizando el usuario de sistema root@localhost, y su cuenta de correo electronico para administracion no se encuentra configurada, por favor defina las configuraciones pertinentes para dicho correo electronico en el modulo de Configuración del sistema y no utilize el usuario root@localhost para trabajar con OTRS.';
+        '';
     $Self->{Translation}->{'Please confirm the confidential information to continue.'} = '';
     $Self->{Translation}->{'Looks fine!'} = '';
     $Self->{Translation}->{'Ok'} = '';
@@ -42,7 +42,7 @@ sub Data {
     $Self->{Translation}->{'on an average system'} = '';
     $Self->{Translation}->{'Benchmark'} = '';
     $Self->{Translation}->{'Execute a SQL benchmark test on your database to find out how fast your database is (done on dedicated benchmark table).'} =
-        'Ejecuta una comparativa SQL para conocer que tan rapida es su base de datos (Se realiza en una tabla dedicada para dicha comparativa).';
+        '';
     $Self->{Translation}->{'This should not be done on production systems!'} = '';
     $Self->{Translation}->{'Multiplier'} = '';
     $Self->{Translation}->{'Please select a multiplier and press start button.'} = '';
@@ -50,21 +50,19 @@ sub Data {
     # Template: AdminSupportLicenseText
 
     # SysConfig
-    $Self->{Translation}->{'The used sender mail address.'} = '';
-    $Self->{Translation}->{'Definition of the Cron checks.'} = '';
-    $Self->{Translation}->{'Definition of the OTRS checks.'} = '';
-    $Self->{Translation}->{'Definition of the Operating System checks.'} = '';
-    $Self->{Translation}->{'Definition of the database checks for the DB2 database.'} = '';
-    $Self->{Translation}->{'Definition of the database checks for the MSSQL database.'} = '';
-    $Self->{Translation}->{'Definition of the database checks for the MySQL database.'} = '';
-    $Self->{Translation}->{'Definition of the database checks for the Oracle database.'} = '';
-    $Self->{Translation}->{'Definition of the database checks for the PostgreSQL database.'} =
-        '';
-    $Self->{Translation}->{'Definition of the webserver checks for the Apache webserver.'} =
-        '';
-    $Self->{Translation}->{'Definition of the webserver checks for the IIS webserver.'} = '';
-    $Self->{Translation}->{'Frontend module registration for the AdminSystemStatus object in the admin area.'} =
-        '';
+
+    $Self->{Translation}->{'The used sender mail address.'} = 'Die verwendete Absenderadresse.';
+    $Self->{Translation}->{'Definition of the Cron checks.'} = 'Definition der Cron-Checks.';
+    $Self->{Translation}->{'Definition of the OTRS checks.'} = 'Definition der OTRS-Checks.';
+    $Self->{Translation}->{'Definition of the Operating System checks.'} = 'Definition der Betriebssystem-Checks.';
+    $Self->{Translation}->{'Definition of the database checks for the DB2 database.'} = 'Definition der Datenbank-Checks für die DB2 Datenbank.';
+    $Self->{Translation}->{'Definition of the database checks for the MSSQL database.'} = 'Definition der Datenbank-Checks für die MSSQL Datenbank.';
+    $Self->{Translation}->{'Definition of the database checks for the MySQL database.'} = 'Definition der Datenbank-Checks für die MySQL Datenbank.';
+    $Self->{Translation}->{'Definition of the database checks for the Oracle database.'} = 'Definition der Datenbank-Checks für die Oracle Datenbank.';
+    $Self->{Translation}->{'Definition of the database checks for the PostgreSQL database.'} = 'Definition der Datenbank-Checks für die PostgreSQL Datenbank.';
+    $Self->{Translation}->{'Definition of the webserver checks for the Apache webserver.'} = 'Definition der Webserver-Checks für den Apache Webserver.';
+    $Self->{Translation}->{'Definition of the webserver checks for the IIS webserver.'} = 'Definition der Webserver-Checks für den IIS Webserver.';
+    $Self->{Translation}->{'Frontend module registration for the AdminSystemStatus object in the admin area.'} = 'Frontendmodul-Registration des AdminSystemStatus-Objekts im Admin-Bereich.';
 
     # Database
     $Self->{Translation}->{'Database'} = '';
@@ -135,6 +133,70 @@ sub Data {
     $Self->{Translation}->{'Database Size'} = '';
     $Self->{Translation}->{'Size of the current database.'} = '';
 
+    # Postgresql
+    $Self->{Translation}->{'nonexisting table(s)'} = '';
+
+    $Self->{Translation}->{'Unknown DateStyle'} = '';
+    $Self->{Translation}->{'need ISO.'} = '';
+    $Self->{Translation}->{'DateStyle'} = '';
+    $Self->{Translation}->{'Check DateStyle.'} = '';
+
+    $Self->{Translation}->{'No server_encoding found.'} = '';
+    $Self->{Translation}->{"Setting server_encoding found, but it's set to"} = '';
+    $Self->{Translation}->{'(need to be UNICODE or UTF8).'} = '';
+    $Self->{Translation}->{'Server Connection (utf8)'} = '';
+    $Self->{Translation}->{'Check the utf8 server connection.'} = '';
+
+    $Self->{Translation}->{'No client_encoding found.'} = '';
+    $Self->{Translation}->{"Setting client_encoding found, but it's set to"} = '';
+    $Self->{Translation}->{'Client Connection (utf8)'} = '';
+    $Self->{Translation}->{'Check the utf8 client connection.'} = '';
+
+    $Self->{Translation}->{'No PostgreSQL version found.'} = '';
+    $Self->{Translation}->{'You use PostgreSQL version'} = '';
+    $Self->{Translation}->{'you should use 8.x or higner.'} = '';
+    $Self->{Translation}->{'Unknown PostgreSQL version'} = '';
+
+    # MSSQL
+    $Self->{Translation}->{'Could not determine Microsoft SQL Server version.'} = '';
+    $Self->{Translation}->{'is'} = '';
+    $Self->{Translation}->{'large, of which'} = '';
+    $Self->{Translation}->{'is available.'} = '';
+    $Self->{Translation}->{'Size'} = '';
+    $Self->{Translation}->{'Check database size.'} = '';
+
+    $Self->{Translation}->{'Could not determine database hostname.'} = '';
+    $Self->{Translation}->{'DatabaseHost'} = '';
+    $Self->{Translation}->{'Hostname'} = '';
+    $Self->{Translation}->{'Check database hostname.'} = '';
+    $Self->{Translation}->{"Table doesn't exist"} = '';
+    $Self->{Translation}->{'tables'} = '';
+
+    # db2
+    $Self->{Translation}->{"Can't find file"} = '';
+
+    # Oracle
+    $Self->{Translation}->{'No ORACLE_HOME setting found.'} = '';
+    $Self->{Translation}->{"ORACLE_HOME don't exists"} = '';
+    $Self->{Translation}->{'Your ORACLE_Home configuration is'} = '';
+    $Self->{Translation}->{'ORACLE_HOME'} = '';
+    $Self->{Translation}->{'Check ORACLE_HOME configuration.'} = '';
+
+    $Self->{Translation}->{'No NLS_LANG configuration found.'} = '';
+    $Self->{Translation}->{'need .utf8 in NLS_LANG (e. g. german_germany.utf8).'} = '';
+    $Self->{Translation}->{'Your NLS_LANG configuration is'} = '';
+    $Self->{Translation}->{'Check NLS_LANG.'} = '';
+
+    $Self->{Translation}->{'No NLS_DATE_FORMAT setting found.'} = '';
+    $Self->{Translation}->{"Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not"} = "Es necesario el formato 'YYYY-MM-DD HH24:MI:SS' para NLS_DATE_FORMAT (no";
+    $Self->{Translation}->{'Your NLS_DATE_FORMAT setting is'} = '';
+    $Self->{Translation}->{'Check NLS_DATE_FORMAT.'} = '';
+    $Self->{Translation}->{'NLS_DATE_FORMAT seems to be wrong'} = '';
+    $Self->{Translation}->{"is not the right format 'yyyy-mm-dd hh:mm::ss' (please check"} = "no es el formato correcto 'yyyy-mm-dd hh:mm::ss' (por favor verifique";
+    $Self->{Translation}->{'NLS_DATE_Format has the right format'} = '';
+    $Self->{Translation}->{'Check NLS_DATE_FORMAT by using SELECT statement.'} = '';
+    $Self->{Translation}->{"Table don't exists"} = '';
+
     # webserver
     $Self->{Translation}->{'Webserver'} = '';
 
@@ -157,6 +219,11 @@ sub Data {
     $Self->{Translation}->{'You should use FastCGI or mod_perl to increase your performance.'} = '';
     $Self->{Translation}->{'CGI Accelerator'} = '';
     $Self->{Translation}->{'Check for CGI Accelerator.'} = '';
+
+    # IIS
+    $Self->{Translation}->{'PerlEx is in use'} = '';
+    $Self->{Translation}->{'You should use PerlEx to increase your performance.'} = '';
+    $Self->{Translation}->{'Check if PerlEx is used.'} = '';
 
     # os
     $Self->{Translation}->{'OS'} = '';
@@ -198,11 +265,108 @@ sub Data {
     $Self->{Translation}->{'in the last 15 minutes'} = '';
     $Self->{Translation}->{'CPU Load'} = '';
     $Self->{Translation}->{'A CPU load check. We try to find out if the system load in the last 15 minutes > 1.'} = '';
-    $Self->{Translation}->{'A CPU load check. We try to find out if the system load in the last 15 minutes < 1.'} = '';
+    $Self->{Translation}->{'A CPU load check. We try to find out if the system load in the last 15 minutes > 1.'} = '';
 
     $Self->{Translation}->{'Disk is full'} = '';
     $Self->{Translation}->{'Disk usage'} = '';
     $Self->{Translation}->{'Check disk usage.'} = '';
+
+    # OTRS
+    $Self->{Translation}->{'You have more error log entries: '} = '';
+    $Self->{Translation}->{'There is one error log entry: '} = '';
+    $Self->{Translation}->{'LogCheck'} = '';
+    $Self->{Translation}->{'Check log for error log entries.'} = '';
+
+    $Self->{Translation}->{'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'} =
+        '';
+    $Self->{Translation}->{'You are using'} = '';
+    $Self->{Translation}->{"that's fine for"} = '';
+    $Self->{Translation}->{'tickets in your system.'} = '';
+    $Self->{Translation}->{'Check Ticket::IndexModule setting.'} = '';
+
+    $Self->{Translation}->{'tickets in StaticDB lock_index but you are using the'} = '';
+    $Self->{Translation}->{'index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.'} = '';
+    $Self->{Translation}->{'tickets in StaticDB index but you are using the'} = '';
+    $Self->{Translation}->{'Skipping test.'} = '';
+    $Self->{Translation}->{'No orphaned records found.'} = '';
+    $Self->{Translation}->{'TicketStaticDBOrphanedRecords'} = '';
+    $Self->{Translation}->{'Check orphaned StaticDB records.'} = '';
+
+    $Self->{Translation}->{'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'} =
+        '';
+    $Self->{Translation}->{'articles in your system.'} = '';
+    $Self->{Translation}->{'Check Ticket::SearchIndexModule setting.'} = '';
+
+    $Self->{Translation}->{'You should not have more than 8000 open tickets in your system. You currently have over 89999! In case you want to improve your performance, close not needed open tickets.'} =
+        '';
+    $Self->{Translation}->{'You should not have over 8000 open tickets in your system. You currently have '} = '';
+    $Self->{Translation}->{'In case you want to improve your performance, close not needed open tickets.'} = '';
+    $Self->{Translation}->{'You should not have more than 8000 open tickets in your system. You currently have '} = '';
+    $Self->{Translation}->{'You have '} = '';
+    $Self->{Translation}->{' open tickets in your system.'} = '';
+    $Self->{Translation}->{'OpenTicketCheck'} = '';
+    $Self->{Translation}->{'Check open tickets in your system.'} = '';
+
+    $Self->{Translation}->{'FQDNConfigCheck'} = '';
+    $Self->{Translation}->{'Check if the configured FQDN is valid.'} = '';
+    $Self->{Translation}->{'Please configure your FQDN inside the SysConfig module. (currently the default setting'} = '';
+    $Self->{Translation}->{'is enabled).'} = '';
+    $Self->{Translation}->{'Invalid FQDN'} = '';
+    $Self->{Translation}->{'looks good.'} = '';
+
+    $Self->{Translation}->{'SystemIDConfigCheck'} = '';
+    $Self->{Translation}->{'Check if the configured SystemID contains only digits.'} = '';
+    $Self->{Translation}->{'Your SystemID setting is'} = '';
+    $Self->{Translation}->{'The SystemID'} = '';
+    $Self->{Translation}->{'must consist of digits exclusively.'} = '';
+
+    $Self->{Translation}->{'ResponseFormatCheck'} = '';
+    $Self->{Translation}->{'Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.'} = '';
+    $Self->{Translation}->{'was not found.'} = '';
+    $Self->{Translation}->{'Config option Ticket::Frontend::ResponseFormat cointains'} = '';
+    $Self->{Translation}->{'should be used instand (see default setting).'} = '';
+
+    $Self->{Translation}->{'FileSystemCheck'} = '';
+    $Self->{Translation}->{'Check if file system is writable.'} = '';
+    $Self->{Translation}->{'The file system is writable.'} = '';
+    $Self->{Translation}->{'No such home directory'} = '';
+    $Self->{Translation}->{"Can't write file"} = '';
+
+    $Self->{Translation}->{'PackageDeployCheck'} = '';
+    $Self->{Translation}->{'Check deployment of all packages.'} = '';
+    $Self->{Translation}->{'All packages are correctly installed.'} = '';
+    $Self->{Translation}->{'Packages not correctly installed'} = '';
+
+    $Self->{Translation}->{'InvalidUserLockedTicketSearch'} = '';
+    $Self->{Translation}->{'Search for invalid user with locked tickets.'} = '';
+    $Self->{Translation}->{'There are no invalid users with locked tickets.'} = '';
+    $Self->{Translation}->{'These invalid users have locked tickets'} = '';
+
+    $Self->{Translation}->{'DefaultUserCheck'} = '';
+    $Self->{Translation}->{'Check if root@localhost account has the default password.'} = '';
+    $Self->{Translation}->{'There is no active root@localhost with default password.'} = '';
+    $Self->{Translation}->{"Change the password or invalidate the account 'root\@localhost'."} = '';
+
+    $Self->{Translation}->{'SOAPCheck'} = '';
+    $Self->{Translation}->{'Check default SOAP credentials.'} = '';
+    $Self->{Translation}->{'You have not enabled SOAP or have set your own password.'} = '';
+    $Self->{Translation}->{'Please set a strong password for SOAP::Password in SysConfig.'} = '';
+
+    $Self->{Translation}->{'Product'} = '';
+    $Self->{Translation}->{'Tickets'} = '';
+    $Self->{Translation}->{'Articles'} = '';
+    $Self->{Translation}->{'Agents'} = '';
+    $Self->{Translation}->{'Roles'} = '';
+    $Self->{Translation}->{'Groups'} = '';
+    $Self->{Translation}->{'Articles per ticket (avg)'} = '';
+    $Self->{Translation}->{'Operating system'} = '';
+    $Self->{Translation}->{'Months between first and last ticket'} = '';
+    $Self->{Translation}->{'Tickets per month (avg)'} = '';
+    $Self->{Translation}->{'Attachments per ticket (avg)'} = '';
+    $Self->{Translation}->{'Attachment size (avg)'} = '';
+    $Self->{Translation}->{'GeneralSystemOverview'} = '';
+    $Self->{Translation}->{'Display a general system overview'} = '';
+    $Self->{Translation}->{'General information about your system.'} = '';
 
 }
 
