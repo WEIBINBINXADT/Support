@@ -2,7 +2,7 @@
 # Kernel/Language/es_MX_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: es_MX_Support.pm,v 1.1 2012-09-04 04:17:54 cg Exp $
+# $Id: es_MX_Support.pm,v 1.2 2012-09-05 04:28:18 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -133,6 +133,70 @@ sub Data {
     $Self->{Translation}->{'Database Size'} = 'Tamaño de la base de datos';
     $Self->{Translation}->{'Size of the current database.'} = 'Tamaño actual de la base de datos.';
 
+    # Postgresql
+    $Self->{Translation}->{'nonexisting table(s)'} = 'tabla(s) inexistente(s)';
+
+    $Self->{Translation}->{'Unknown DateStyle'} = 'Estilo de fecha desconocido';
+    $Self->{Translation}->{'need ISO.'} = 'ISO es necesario';
+    $Self->{Translation}->{'DateStyle'} = 'Estilo de fecha';
+    $Self->{Translation}->{'Check DateStyle.'} = 'Verifica el estilo de fecha';
+
+    $Self->{Translation}->{'No server_encoding found.'} = 'server_encoding no fue encontrado.';
+    $Self->{Translation}->{"Setting server_encoding found, but it's set to"} = 'Configuración server_encoding, pero colocada con valor de ';
+    $Self->{Translation}->{'(need to be UNICODE or UTF8).'} = '(necesita ser UNICODE o UTF8).';
+    $Self->{Translation}->{'Server Connection (utf8)'} = 'Conexion del servidor (utf8)';
+    $Self->{Translation}->{'Check the utf8 server connection.'} = 'Verifica la conexion utf8 del servidor';
+
+    $Self->{Translation}->{'No client_encoding found.'} = 'No se encontro client_encoding';
+    $Self->{Translation}->{"Setting client_encoding found, but it's set to"} = 'Se encontro client_encoding, pero con valor de';
+    $Self->{Translation}->{'Client Connection (utf8)'} = 'Conexión del cliente (utf8)';
+    $Self->{Translation}->{'Check the utf8 client connection.'} = 'Verifica la conexion utf8 del cliente.';
+
+    $Self->{Translation}->{'No PostgreSQL version found.'} = 'No se encontro version de PostgreSQL';
+    $Self->{Translation}->{'You use PostgreSQL version'} = 'Se esta utilizando PostgreSQL version';
+    $Self->{Translation}->{'you should use 8.x or higner.'} = 'debe usar 8.x o superior';
+    $Self->{Translation}->{'Unknown PostgreSQL version'} = 'Versión desconocida de PostgreSQL';
+
+    # MSSQL
+    $Self->{Translation}->{'Could not determine Microsoft SQL Server version.'} = 'No ha sido posible determinar una versión para Microsoft SQL Server';
+    $Self->{Translation}->{'is'} = 'es';
+    $Self->{Translation}->{'large, of which'} = 'de tamaño, del cual';
+    $Self->{Translation}->{'is available.'} = 'se encuentra disponible.';
+    $Self->{Translation}->{'Size'} = 'Tamaño';
+    $Self->{Translation}->{'Check database size.'} = 'Verifica el tamaño de la base de datos.';
+
+    $Self->{Translation}->{'Could not determine database hostname.'} = 'No fue posible determinar nombre del anfitrión para la base de datos.';
+    $Self->{Translation}->{'DatabaseHost'} = 'Anfitrión para la base de datos';
+    $Self->{Translation}->{'Hostname'} = 'Nombre del anfitrión';
+    $Self->{Translation}->{'Check database hostname.'} = 'Verifica el nombre del anfitrión para la base de datos';
+    $Self->{Translation}->{"Table doesn't exist"} = 'No existe la tabla';
+    $Self->{Translation}->{'tables'} = 'tablas';
+
+    # db2
+    $Self->{Translation}->{"Can't find file"} = 'No ha sido posible encontrar el archivo';
+
+    # Oracle
+    $Self->{Translation}->{'No ORACLE_HOME setting found.'} = 'La configuración ORACLE_HOME no fue encontrada';
+    $Self->{Translation}->{"ORACLE_HOME don't exists"} = 'No existe ORACLE_HOME';
+    $Self->{Translation}->{'Your ORACLE_Home configuration is'} = 'La configuración para ORACLE_HOME es';
+    $Self->{Translation}->{'ORACLE_HOME'} = 'ORACLE_HOME';
+    $Self->{Translation}->{'Check ORACLE_HOME configuration.'} = 'Verifica la configuración para ORACLE_HOME.';
+
+    $Self->{Translation}->{'No NLS_LANG configuration found.'} = 'La configuración NLS_LANG no fue encontrada';
+    $Self->{Translation}->{'need .utf8 in NLS_LANG (e. g. german_germany.utf8).'} = 'necesita .utf8 en NLS_LANG (ej. german_germany.utf8).';
+    $Self->{Translation}->{'Your NLS_LANG configuration is'} = 'La configuración para NLS_LANG es';
+    $Self->{Translation}->{'Check NLS_LANG.'} = 'Verifica NLS_LANG';
+
+    $Self->{Translation}->{'No NLS_DATE_FORMAT setting found.'} = 'La configuración NLS_DATE_FORMAT no fue encontrada.';
+    $Self->{Translation}->{"Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not"} = "Es necesario el formato 'YYYY-MM-DD HH24:MI:SS' para NLS_DATE_FORMAT (no";
+    $Self->{Translation}->{'Your NLS_DATE_FORMAT setting is'} = 'La configuración para NLS_DATE_FORMAT es';
+    $Self->{Translation}->{'Check NLS_DATE_FORMAT.'} = 'Verifica NLS_DATE_FORMAT';
+    $Self->{Translation}->{'NLS_DATE_FORMAT seems to be wrong'} = 'El valor para NLS_DATE_FORMAT parece ser incorrecto';
+    $Self->{Translation}->{"is not the right format 'yyyy-mm-dd hh:mm::ss' (please check"} = "no es el formato correcto 'yyyy-mm-dd hh:mm::ss' (por favor verifique";
+    $Self->{Translation}->{'NLS_DATE_Format has the right format'} = 'NLS_DATE_Format tiene el formato correcto';
+    $Self->{Translation}->{'Check NLS_DATE_FORMAT by using SELECT statement.'} = 'Verifica NLS_DATE_Format meidante el uso de una consulta SELECT';
+    $Self->{Translation}->{"Table don't exists"} = 'La tabla no existe';
+
     # webserver
     $Self->{Translation}->{'Webserver'} = 'Servidor web';
 
@@ -155,6 +219,11 @@ sub Data {
     $Self->{Translation}->{'You should use FastCGI or mod_perl to increase your performance.'} = 'Debe usar FastCGI o mod_perl para incrementar el rendimiento.';
     $Self->{Translation}->{'CGI Accelerator'} = 'Acelerador CGI';
     $Self->{Translation}->{'Check for CGI Accelerator.'} = 'Verifica un acelerador CGI';
+
+    # IIS
+    $Self->{Translation}->{'PerlEx is in use'} = 'PerlEx se encuentra en uso';
+    $Self->{Translation}->{'You should use PerlEx to increase your performance.'} = 'Debe usar PerlEx para incrementar el desempeño';
+    $Self->{Translation}->{'Check if PerlEx is used.'} = 'Verifica si PerlEx esta en uso';
 
     # os
     $Self->{Translation}->{'OS'} = 'Sistema operativo';
@@ -201,6 +270,103 @@ sub Data {
     $Self->{Translation}->{'Disk is full'} = 'Disco lleno';
     $Self->{Translation}->{'Disk usage'} = 'Uso de disco';
     $Self->{Translation}->{'Check disk usage.'} = 'Verifica uso de disco';
+
+    # OTRS
+    $Self->{Translation}->{'You have more error log entries: '} = 'Se tienen mas entradas de error';
+    $Self->{Translation}->{'There is one error log entry: '} = 'Hay una entrada de error';
+    $Self->{Translation}->{'LogCheck'} = 'Verificación de bitacora';
+    $Self->{Translation}->{'Check log for error log entries.'} = 'Verifica la bitacora para entradas de error.';
+
+    $Self->{Translation}->{'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'} =
+        'ticket en el sistema. Se debe usar el modulo StaticDB. Vea el manual de administración (Ajustes de rendimiento) para mas información';
+    $Self->{Translation}->{'You are using'} = 'Se esta usando';
+    $Self->{Translation}->{"that's fine for"} = 'es correcto para';
+    $Self->{Translation}->{'tickets in your system.'} = 'tickets en el sistema';
+    $Self->{Translation}->{'Check Ticket::IndexModule setting.'} = 'Verifica la configuración Ticket::IndexModule.';
+
+    $Self->{Translation}->{'tickets in StaticDB lock_index but you are using the'} = 'tickets en StaticDB lock_index pero se esta usando';
+    $Self->{Translation}->{'index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.'} = 'indice. Por favor ejecute otrs/bin/otrs.CleanTicketIndex.pl para limpiar el indice StaticDB';
+    $Self->{Translation}->{'tickets in StaticDB index but you are using the'} = 'tickets en el indice StaticDB pero se esta usando';
+    $Self->{Translation}->{'Skipping test.'} = 'Omitiendo revisión';
+    $Self->{Translation}->{'No orphaned records found.'} = 'No se encontraron entradas huerfanas';
+    $Self->{Translation}->{'TicketStaticDBOrphanedRecords'} = 'TicketStaticDBOrphanedRecords';
+    $Self->{Translation}->{'Check orphaned StaticDB records.'} = 'Verifica entradas huerfanas en StaticDB';
+
+    $Self->{Translation}->{'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'} =
+        'articulos en el sistema. Debe utilizar el modulo StaticDB para OTRS 2.3 y superior. Vea el manual de administración (Ajustes de rendimiento) para mas información.';
+    $Self->{Translation}->{'articles in your system.'} = 'articulos en el sistema.';
+    $Self->{Translation}->{'Check Ticket::SearchIndexModule setting.'} = 'Verifica la configuración Ticket::SearchIndexModule.';
+
+    $Self->{Translation}->{'You should not have more than 8000 open tickets in your system. You currently have over 89999! In case you want to improve your performance, close not needed open tickets.'} =
+        'No debe tener mas de 8000 tickets abiertos en el sistema. Se cuenta actualmente con mas de 89999! En caso de que quiera mejorar el rendimiento del sistema, cierre los tickets que no se necesiten.';
+    $Self->{Translation}->{'You should not have over 8000 open tickets in your system. You currently have '} = 'No debe tener arriba de 8000 tickets abiertos en el sistema. Usted actualmente tiene';
+    $Self->{Translation}->{'In case you want to improve your performance, close not needed open tickets.'} = 'En caso de que quiera mejorar el rendimiento, cierre los tickets que no se necesiten.';
+    $Self->{Translation}->{'You should not have more than 8000 open tickets in your system. You currently have '} = 'No debe tener mas de 8000 tickets abiertos en el sistema. Usted actualmente tiene';
+    $Self->{Translation}->{'You have '} = 'Se tienen';
+    $Self->{Translation}->{' open tickets in your system.'} = ' tickets abiertos en el sistema.';
+    $Self->{Translation}->{'OpenTicketCheck'} = 'OpenTicketCheck';
+    $Self->{Translation}->{'Check open tickets in your system.'} = 'Verifica tickets abiertos en el sistema.';
+
+    $Self->{Translation}->{'FQDNConfigCheck'} = 'FQDNConfigCheck';
+    $Self->{Translation}->{'Check if the configured FQDN is valid.'} = 'Verifica si el FQDN configurado es valido.';
+    $Self->{Translation}->{'Please configure your FQDN inside the SysConfig module. (currently the default setting'} = 'Por favor configure su FQDN dentro del modulo de configuración. (actualmente el valor por omision es';
+    $Self->{Translation}->{'is enabled).'} = 'se encuentra habilitado.';
+    $Self->{Translation}->{'Invalid FQDN'} = 'FQDN invalido.';
+    $Self->{Translation}->{'looks good.'} = 'luce bien.';
+
+    $Self->{Translation}->{'SystemIDConfigCheck'} = 'SystemIDConfigCheck';
+    $Self->{Translation}->{'Check if the configured SystemID contains only digits.'} = 'Verifica si el SystemID configurado en el sistema contiene solo digitos.';
+    $Self->{Translation}->{'Your SystemID setting is'} = 'El SystemID es';
+    $Self->{Translation}->{'The SystemID'} = 'El SystemID';
+    $Self->{Translation}->{'must consist of digits exclusively.'} = 'debe consistir de digitos exclusivamente.';
+
+    $Self->{Translation}->{'ResponseFormatCheck'} = 'ResponseFormatCheck';
+    $Self->{Translation}->{'Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.'} = 'Verifica si Ticket::Frontend::ResponseFormat no contiene $Data{""}.';
+    $Self->{Translation}->{'was not found.'} = 'no fue encontrado.';
+    $Self->{Translation}->{'Config option Ticket::Frontend::ResponseFormat cointains'} = 'La opción de configuración Ticket::Frontend::ResponseFormat contiene';
+    $Self->{Translation}->{'should be used instand (see default setting).'} = 'debe ser usado en su lugar (ver las opciones de configuración).';
+
+    $Self->{Translation}->{'FileSystemCheck'} = 'FileSystemCheck';
+    $Self->{Translation}->{'Check if file system is writable.'} = 'Verifica si el sistema de archivos tiene permisos de escritura';
+    $Self->{Translation}->{'The file system is writable.'} = 'El sistema de archivos tiene permisos de escritura.';
+    $Self->{Translation}->{'No such home directory'} = 'No es el directorio inicial';
+    $Self->{Translation}->{"Can't write file"} = 'No se puede escribir en archivo';
+
+    $Self->{Translation}->{'PackageDeployCheck'} = 'PackageDeployCheck';
+    $Self->{Translation}->{'Check deployment of all packages.'} = 'Verifica la consistencia de todos los paquetes.';
+    $Self->{Translation}->{'All packages are correctly installed.'} = 'Todos los paquetes estan correctamente instalados.';
+    $Self->{Translation}->{'Packages not correctly installed'} = 'Paquetes incorrectamente instalados';
+
+    $Self->{Translation}->{'InvalidUserLockedTicketSearch'} = 'InvalidUserLockedTicketSearch';
+    $Self->{Translation}->{'Search for invalid user with locked tickets.'} = 'Busca usuarios invalidos con tickets bloqueados.';
+    $Self->{Translation}->{'There are no invalid users with locked tickets.'} = 'No hay usuarios invalidos con tickets bloqueados.';
+    $Self->{Translation}->{'These invalid users have locked tickets'} = 'Estos usuarios invalidos tienen ticket bloqueados';
+
+    $Self->{Translation}->{'DefaultUserCheck'} = 'DefaultUserCheck';
+    $Self->{Translation}->{'Check if root@localhost account has the default password.'} = 'Verifica si la cuenta root@localhost tiene la clave por omisión';
+    $Self->{Translation}->{'There is no active root@localhost with default password.'} = 'La cuenta root@localhost on esta activa con la clave por omisión';
+    $Self->{Translation}->{"Change the password or invalidate the account 'root\@localhost'."} = 'Modifique la clave o invalide la cuenta root\@localhost';
+
+    $Self->{Translation}->{'SOAPCheck'} = 'SOAPCheck';
+    $Self->{Translation}->{'Check default SOAP credentials.'} = 'Verifica los datos de  autentificación para SOAP.';
+    $Self->{Translation}->{'You have not enabled SOAP or have set your own password.'} = 'No se encuentra habilitado SOAP o ha puesto su propia clave.';
+    $Self->{Translation}->{'Please set a strong password for SOAP::Password in SysConfig.'} = 'Por favor ingrese una clave segura para SOAP::Password en la configuración.';
+
+    $Self->{Translation}->{'Product'} = 'Producto';
+    $Self->{Translation}->{'Tickets'} = 'Ticket';
+    $Self->{Translation}->{'Articles'} = 'Articulos';
+    $Self->{Translation}->{'Agents'} = 'Agentes';
+    $Self->{Translation}->{'Roles'} = 'Roles';
+    $Self->{Translation}->{'Groups'} = 'Grupos';
+    $Self->{Translation}->{'Articles per ticket (avg)'} = 'Articulos por ticket (promedio)';
+    $Self->{Translation}->{'Operating system'} = 'Sistema Operativo';
+    $Self->{Translation}->{'Months between first and last ticket'} = 'Meses entre el primer y ultimo ticket';
+    $Self->{Translation}->{'Tickets per month (avg)'} = 'Ticket por mes (promedio)';
+    $Self->{Translation}->{'Attachments per ticket (avg)'} = 'Promedio de archivos adjuntos por ticket (promedio)';
+    $Self->{Translation}->{'Attachment size (avg)'} = 'Tamaño de archivo adjunto (promedio)';
+    $Self->{Translation}->{'GeneralSystemOverview'} = 'GeneralSystemOverview';
+    $Self->{Translation}->{'Display a general system overview'} = 'Muestra una vista general de sistema';
+    $Self->{Translation}->{'General information about your system.'} = 'Información general del sistema.';
 
 }
 
