@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/oracle.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: oracle.pm,v 1.24 2012-08-30 18:45:21 cg Exp $
+# $Id: oracle.pm,v 1.25 2012-09-05 04:29:19 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.24 $) [1];
+$VERSION = qw($Revision: 1.25 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,13 +28,14 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
     # create additional objects
-    $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+    $Self->{XMLObject}      = Kernel::System::XML->new( %{$Self} );
+    $Self->{TimeObject}     = Kernel::System::Time->new( %{$Self} );
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -81,20 +82,22 @@ sub _OracleHomeCheck {
 
     # check ORACLE_HOME
     my $Check   = 'Failed';
-    my $Message = 'No ORACLE_HOME setting found.';
+    my $Message = $Self->{LanguageObject}->Get('No ORACLE_HOME setting found.');
     if ( $ENV{ORACLE_HOME} ) {
         if ( !-e $ENV{ORACLE_HOME} ) {
-            $Message = "ORACLE_HOME don't exists ($ENV{ORACLE_HOME}).";
-            $Check   = 'Failed';
+            $Message = $Self->{LanguageObject}->Get("ORACLE_HOME don't exists")
+                . " ($ENV{ORACLE_HOME}).";
+            $Check = 'Failed';
         }
         else {
-            $Message = "Your ORACLE_Home configuration is $ENV{ORACLE_HOME}.";
-            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get('Your ORACLE_Home configuration is')
+                . " $ENV{ORACLE_HOME}.";
+            $Check = 'OK';
         }
     }
     $Data = {
-        Name        => 'ORACLE_HOME',
-        Description => "Check ORACLE_HOME configuration.",
+        Name        => $Self->{LanguageObject}->Get('ORACLE_HOME'),
+        Description => $Self->{LanguageObject}->Get('Check ORACLE_HOME configuration.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -106,26 +109,31 @@ sub _NLSLangCheck {
 
     # check NLS_LANG
     my $Check   = 'Failed';
-    my $Message = 'No NLS_LANG configuration found.';
+    my $Message = $Self->{LanguageObject}->Get('No NLS_LANG configuration found.');
     if ( $ENV{NLS_LANG} ) {
         if ( $Self->{ConfigObject}->Get('DefaultCharset') =~ /utf(\-8|8)/i ) {
             if ( $ENV{NLS_LANG} !~ /utf(\-8|8)/i ) {
-                $Message = "$ENV{NLS_LANG}, need .utf8 in NLS_LANG (e. g. german_germany.utf8).";
-                $Check   = 'Failed';
+                $Message
+                    = "$ENV{NLS_LANG}, "
+                    . $Self->{LanguageObject}
+                    ->Get('need .utf8 in NLS_LANG (e. g. german_germany.utf8).');
+                $Check = 'Failed';
             }
             else {
-                $Message = "Your NLS_LANG configuration is $ENV{NLS_LANG}.";
-                $Check   = 'OK';
+                $Message = $Self->{LanguageObject}->Get('Your NLS_LANG configuration is')
+                    . " $ENV{NLS_LANG}.";
+                $Check = 'OK';
             }
         }
         else {
-            $Message = "Your NLS_LANG configuration is $ENV{NLS_LANG}";
-            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get('Your NLS_LANG configuration is')
+                . " $ENV{NLS_LANG}";
+            $Check = 'OK';
         }
     }
     my $Data = {
         Name        => 'NLS_LANG',
-        Description => "Check NLS_LANG.",
+        Description => $Self->{LanguageObject}->Get("Check NLS_LANG."),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -137,21 +145,24 @@ sub _NLSDateFormatCheck {
 
     # check NLS_DATE_FORMAT
     my $Check   = 'Failed';
-    my $Message = 'No NLS_DATE_FORMAT setting found.';
+    my $Message = $Self->{LanguageObject}->Get('No NLS_DATE_FORMAT setting found.');
     if ( $ENV{NLS_DATE_FORMAT} ) {
         if ( $ENV{NLS_DATE_FORMAT} ne "YYYY-MM-DD HH24:MI:SS" ) {
             $Message
-                = "Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not $ENV{NLS_DATE_FORMAT}).";
+                = $Self->{LanguageObject}
+                ->Get("Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not")
+                . " $ENV{NLS_DATE_FORMAT}).";
             $Check = 'Failed';
         }
         else {
-            $Message = "Your NLS_DATE_FORMAT setting is $ENV{NLS_DATE_FORMAT}.";
-            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get("Your NLS_DATE_FORMAT setting is")
+                . " $ENV{NLS_DATE_FORMAT}.";
+            $Check = 'OK';
         }
     }
     my $Data = {
         Name        => 'NLS_DATE_FORMAT',
-        Description => "Check NLS_DATE_FORMAT.",
+        Description => $Self->{LanguageObject}->Get('Check NLS_DATE_FORMAT.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -163,7 +174,7 @@ sub _NLSDateFormatSelectCheck {
 
     # check NLS_DATE_FORMAT
     my $Check   = 'Failed';
-    my $Message = 'NLS_DATE_FORMAT seems to be wrong';
+    my $Message = $Self->{LanguageObject}->Get('NLS_DATE_FORMAT seems to be wrong');
     my $CreateTime;
 
     $Self->{DBObject}->Prepare( SQL => "SELECT create_time FROM valid", Limit => 1 );
@@ -174,19 +185,24 @@ sub _NLSDateFormatSelectCheck {
     if ($CreateTime) {
         if ( $CreateTime !~ /^\d\d\d\d-(\d|\d\d)-(\d|\d\d)\s(\d|\d\d):(\d|\d\d):(\d|\d\d)/ ) {
             $Message
-                = "$CreateTime is not the right format 'yyyy-mm-dd hh:mm::ss' (please check \$ENV{NLS_DATE_FORMAT}).";
+                = "$CreateTime "
+                . $Self->{LanguageObject}
+                ->Get("is not the right format 'yyyy-mm-dd hh:mm::ss' (please check")
+                . " \$ENV{NLS_DATE_FORMAT}).";
             $Check = 'Failed';
         }
         else {
-            $Message = "NLS_DATE_Format has the right format ($CreateTime).";
-            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get('NLS_DATE_Format has the right format')
+                . " ($CreateTime).";
+            $Check = 'OK';
         }
     }
     my $Data = {
-        Name        => 'NLS_DATE_SELECT_FORMAT',
-        Description => "Check NLS_DATE_FORMAT by using SELECT statement.",
-        Comment     => $Message,
-        Check       => $Check,
+        Name => 'NLS_DATE_SELECT_FORMAT',
+        Description =>
+            $Self->{LanguageObject}->Get('Check NLS_DATE_FORMAT by using SELECT statement.'),
+        Comment => $Message,
+        Check   => $Check,
     };
     return $Data;
 }
@@ -229,33 +245,33 @@ sub _TableCheck {
                 }
             }
             if ($Message) {
-                $Message = "Table don't exists: $Message.";
+                $Message = $Self->{LanguageObject}->Get("Table don't exists") . ": $Message.";
             }
             else {
                 $Check   = 'OK';
-                $Message = "$Count tables checked.";
+                $Message = "$Count " . $Self->{LanguageObject}->Get('tables checked.');
             }
             $Data = {
-                Name        => 'Table Check',
-                Description => "Check existing framework tables.",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
                 Comment     => $Message,
                 Check       => $Check,
             };
         }
         else {
             $Data = {
-                Name        => 'Table Check',
-                Description => "Check existing framework tables.",
-                Comment     => "Can't open file $File: $!",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+                Comment     => $Self->{LanguageObject}->Get("Can't open file") . " $File: $!",
                 Check       => 'Critical',
             };
         }
     }
     else {
         $Data = {
-            Name        => 'Table Check',
-            Description => "Check existing framework tables.",
-            Comment     => "Can't find file $File!",
+            Name        => $Self->{LanguageObject}->Get('Table Check'),
+            Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+            Comment     => $Self->{LanguageObject}->Get("Can't find file") . " $File!",
             Check       => 'Critical',
         };
     }
@@ -287,19 +303,23 @@ sub _CurrentTimestampCheck {
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
         $Check = 'OK';
         $Message
-            = 'There is no difference between application server time and database server time.';
+            = $Self->{LanguageObject}->Get(
+            'There is no difference between application server time and database server time.'
+            );
     }
     else {
         $Check = 'Failed';
         $Message
-            = 'There is a material difference ('
+            = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
-            . " seconds) between application server ($TimeApplicationServer) and database server ($TimeDatabaseServer) time.";
+            . $Self->{LanguageObject}->Get(' seconds) between application server (')
+            . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
+            . $TimeDatabaseServer . $Self->{LanguageObject}->Get(') time.');
     }
 
     $Data = {
-        Name        => 'Current Timestamp Check',
-        Description => 'Check "System Time" vs "Current Timestamp".',
+        Name        => $Self->{LanguageObject}->Get('Current Timestamp Check'),
+        Description => $Self->{LanguageObject}->Get('Check "System Time" vs "Current Timestamp".'),
         Comment     => $Message,
         Check       => $Check,
     };

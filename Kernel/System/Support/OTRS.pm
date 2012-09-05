@@ -2,7 +2,7 @@
 # Kernel/System/Support/OTRS.pm - all required otrs information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OTRS.pm,v 1.45 2012-09-04 04:12:06 cg Exp $
+# $Id: OTRS.pm,v 1.46 2012-09-05 04:30:20 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +21,7 @@ use Kernel::System::Package;
 use Kernel::System::Auth;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.45 $) [1];
+$VERSION = qw($Revision: 1.46 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -31,7 +31,7 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject TimeObject EncodeObject DBObject)) {
+    for (qw(ConfigObject LogObject MainObject TimeObject EncodeObject DBObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
@@ -42,6 +42,7 @@ sub new {
     $Self->{PackageObject}      = Kernel::System::Package->new( %{$Self} );
     $Self->{GroupObject}        = Kernel::System::Group->new( %{$Self} );
     $Self->{AuthObject}         = Kernel::System::Auth->new( %{$Self} );
+    $Self->{LanguageObject}     = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -99,10 +100,10 @@ sub _LogCheck {
             if ( $Row[1] =~ /error/i ) {
                 $Check = 'Failed';
                 if ($Message) {
-                    $Message = 'You have more error log entries: ';
+                    $Message = $Self->{LanguageObject}->Get('You have more error log entries: ');
                 }
                 else {
-                    $Message = 'There is one error log entry: ';
+                    $Message = $Self->{LanguageObject}->Get('There is one error log entry: ');
                 }
                 if ($Error) {
                     $Error .= ', ';
@@ -113,8 +114,8 @@ sub _LogCheck {
     }
 
     $Data = {
-        Name        => 'LogCheck',
-        Description => 'Check log for error log entries.',
+        Name        => $Self->{LanguageObject}->Get('LogCheck'),
+        Description => $Self->{LanguageObject}->Get('Check log for error log entries.'),
         Comment     => $Message . $Error,
         Check       => $Check,
     };
@@ -137,7 +138,10 @@ sub _TicketIndexModuleCheck {
             if ( $Module =~ /RuntimeDB/ ) {
                 $Check = 'Failed';
                 $Message
-                    = "$Row[0] tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}->Get(
+                    'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'
+                    );
             }
             else {
                 $Check   = 'OK';
@@ -148,7 +152,10 @@ sub _TicketIndexModuleCheck {
             if ( $Module =~ /RuntimeDB/ ) {
                 $Check = 'Critical';
                 $Message
-                    = "$Row[0] tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}->Get(
+                    'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'
+                    );
             }
             else {
                 $Check   = 'OK';
@@ -157,12 +164,14 @@ sub _TicketIndexModuleCheck {
         }
         else {
             $Check   = 'OK';
-            $Message = "You are using \"$Module\", that's fine for $Row[0] tickets in your system.";
+            $Message = $Self->{LanguageObject}->Get('You are using')
+                . " \"$Module\", " . $Self->{LanguageObject}->Get("that's fine for")
+                . " $Row[0] " . $Self->{LanguageObject}->Get('tickets in your system.');
         }
     }
     $Data = {
         Name        => 'Ticket::IndexModule',
-        Description => 'Check Ticket::IndexModule setting.',
+        Description => $Self->{LanguageObject}->Get('Check Ticket::IndexModule setting.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -186,7 +195,13 @@ sub _TicketStaticDBOrphanedRecords {
             if ( $Row[0] ) {
                 $Check = 'Failed';
                 $Message
-                    = "$Row[0] tickets in StaticDB lock_index but you are using the $Module index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}
+                    ->Get('tickets in StaticDB lock_index but you are using the')
+                    . " $Module "
+                    . $Self->{LanguageObject}->Get(
+                    "index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
+                    );
             }
         }
 
@@ -195,22 +210,31 @@ sub _TicketStaticDBOrphanedRecords {
             if ( $Row[0] ) {
                 $Check = 'Failed';
                 $Message
-                    = "$Row[0] tickets in StaticDB index but you are using the $Module index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}
+                    ->Get('tickets in StaticDB index but you are using the')
+                    . " $Module "
+                    . $Self->{LanguageObject}->Get(
+                    "index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
+                    );
             }
         }
     }
     else {
-        $Message = "You are using $Module. Skipping test.";
-        $Check   = 'OK';
+        $Message
+            = $Self->{LanguageObject}->Get('You are using')
+            . " $Module. "
+            . $Self->{LanguageObject}->Get('Skipping test.');
+        $Check = 'OK';
     }
     if ( $Message eq '' ) {
-        $Message = 'No orphaned records found.';
+        $Message = $Self->{LanguageObject}->Get('No orphaned records found.');
         $Check   = 'OK';
     }
 
     $Data = {
-        Name        => 'TicketStaticDBOrphanedRecords',
-        Description => 'Check orphaned StaticDB records.',
+        Name        => $Self->{LanguageObject}->Get('TicketStaticDBOrphanedRecords'),
+        Description => $Self->{LanguageObject}->Get('Check orphaned StaticDB records.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -232,7 +256,10 @@ sub _TicketFulltextIndexModuleCheck {
             if ( $Module =~ /RuntimeDB/ ) {
                 $Check = 'Failed';
                 $Message
-                    = "$Row[0] articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}->Get(
+                    'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'
+                    );
             }
             else {
                 $Check   = 'OK';
@@ -243,7 +270,10 @@ sub _TicketFulltextIndexModuleCheck {
             if ( $Module =~ /RuntimeDB/ ) {
                 $Check = 'Critical';
                 $Message
-                    = "$Row[0] articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.";
+                    = "$Row[0] "
+                    . $Self->{LanguageObject}->Get(
+                    'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'
+                    );
             }
             else {
                 $Check   = 'OK';
@@ -253,12 +283,14 @@ sub _TicketFulltextIndexModuleCheck {
         else {
             $Check = 'OK';
             $Message
-                = "You are using \"$Module\", that's fine for $Row[0] articles in your system.";
+                = $Self->{LanguageObject}->Get('You are using') . " \"$Module\", "
+                . $Self->{LanguageObject}->Get("that's fine for")
+                . " $Row[0] " . $Self->{LanguageObject}->Get('articles in your system.');
         }
     }
     $Data = {
         Name        => 'Ticket::SearchIndexModule',
-        Description => 'Check Ticket::SearchIndexModule setting.',
+        Description => $Self->{LanguageObject}->Get('Check Ticket::SearchIndexModule setting.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -283,32 +315,42 @@ sub _OpenTicketCheck {
     if ( $#TicketIDs > 89990 ) {
         $Check = 'Failed';
         $Message
-            = 'You should not have more than 8000 open tickets in your system. You currently have over 89999! In case you want to improve your performance, close not needed open tickets.';
+            = $Self->{LanguageObject}->Get(
+            'You should not have more than 8000 open tickets in your system. You currently have over 89999! In case you want to improve your performance, close not needed open tickets.'
+            );
 
     }
     elsif ( $#TicketIDs > 10000 ) {
         $Check = 'Failed';
         $Message
-            = 'You should not have over 8000 open tickets in your system. You currently have '
-            . $#TicketIDs
-            . '. In case you want to improve your performance, close not needed open tickets.';
+            = $Self->{LanguageObject}
+            ->Get('You should not have over 8000 open tickets in your system. You currently have ')
+            . $#TicketIDs . '. '
+            . $Self->{LanguageObject}
+            ->Get('In case you want to improve your performance, close not needed open tickets.');
 
     }
     elsif ( $#TicketIDs > 8000 ) {
         $Check = 'Critical';
         $Message
-            = 'You should not have more than 8000 open tickets in your system. You currently have '
+            = $Self->{LanguageObject}->Get(
+            'You should not have more than 8000 open tickets in your system. You currently have '
+            )
             . $#TicketIDs
-            . '. In case you want to improve your performance, close not needed open tickets.';
+            . $Self->{LanguageObject}
+            ->Get('. In case you want to improve your performance, close not needed open tickets.');
 
     }
     else {
-        $Check   = 'OK';
-        $Message = 'You have ' . $#TicketIDs . ' open tickets in your system.';
+        $Check = 'OK';
+        $Message
+            = $Self->{LanguageObject}->Get('You have ')
+            . $#TicketIDs
+            . $Self->{LanguageObject}->Get(' open tickets in your system.');
     }
     $Data = {
-        Name        => 'OpenTicketCheck',
-        Description => 'Check open tickets in your system.',
+        Name        => $Self->{LanguageObject}->Get('OpenTicketCheck'),
+        Description => $Self->{LanguageObject}->Get('Check open tickets in your system.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -319,8 +361,8 @@ sub _OpenTicketCheck {
 sub _FQDNConfigCheck {
     my ( $Self, %Param ) = @_;
     my $Data = {
-        Name        => 'FQDNConfigCheck',
-        Description => 'Check if the configured FQDN is valid.',
+        Name        => $Self->{LanguageObject}->Get('FQDNConfigCheck'),
+        Description => $Self->{LanguageObject}->Get('Check if the configured FQDN is valid.'),
         Check       => 'Failed',
         Comment     => '',
     };
@@ -332,19 +374,22 @@ sub _FQDNConfigCheck {
     if ( $FQDN eq 'yourhost.example.com' ) {
         $Data->{Check} = 'Failed';
         $Data->{Comment}
-            = "Please configure your FQDN inside the SysConfig module. (currently the default setting '$FQDN' is enabled).";
+            = $Self->{LanguageObject}->Get(
+            'Please configure your FQDN inside the SysConfig module. (currently the default setting'
+            )
+            . " '$FQDN' " . $Self->{LanguageObject}->Get('is enabled).');
     }
 
     # FQDN syntax check.
     elsif ( $FQDN !~ /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/ ) {
         $Data->{Check}   = 'Failed';
-        $Data->{Comment} = "Invalid FQDN '$FQDN'.";
+        $Data->{Comment} = $Self->{LanguageObject}->Get('Invalid FQDN') . " '$FQDN'.";
     }
 
     # Nothing to complain. :-(
     else {
         $Data->{Check}   = 'OK';
-        $Data->{Comment} = "FQDN '$FQDN' looks good.";
+        $Data->{Comment} = "FQDN '$FQDN' " . $Self->{LanguageObject}->Get('looks good.');
     }
     return $Data;
 }
@@ -354,10 +399,11 @@ sub _SystemIDConfigCheck {
     my ( $Self, %Param ) = @_;
 
     my $Data = {
-        Name        => 'SystemIDConfigCheck',
-        Description => 'Check if the configured SystemID contains only digits.',
-        Check       => 'Failed',
-        Comment     => '',
+        Name => $Self->{LanguageObject}->Get('SystemIDConfigCheck'),
+        Description =>
+            $Self->{LanguageObject}->Get('Check if the configured SystemID contains only digits.'),
+        Check   => 'Failed',
+        Comment => '',
     };
 
     # Get the configured SystemID
@@ -366,10 +412,11 @@ sub _SystemIDConfigCheck {
     # Does the SystemID contain non-digits?
     if ( $SystemID =~ /^\d+$/ ) {
         $Data->{Check}   = 'OK';
-        $Data->{Comment} = " Your SystemID setting is $SystemID."
+        $Data->{Comment} = $Self->{LanguageObject}->Get('Your SystemID setting is') . " $SystemID.";
     }
     else {
-        $Data->{Comment} = "The SystemID '$SystemID' must consist of digits exclusively.";
+        $Data->{Comment} = $Self->{LanguageObject}->Get('The SystemID') . " '$SystemID' "
+            . $Self->{LanguageObject}->Get('must consist of digits exclusively.');
     }
     return $Data;
 }
@@ -379,10 +426,11 @@ sub _ConfigCheckTicketFrontendResponseFormat {
     my ( $Self, %Param ) = @_;
 
     my $Data = {
-        Name        => 'ResponseFormatCheck',
-        Description => 'Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.',
-        Check       => 'Failed',
-        Comment     => '',
+        Name        => $Self->{LanguageObject}->Get('ResponseFormatCheck'),
+        Description => $Self->{LanguageObject}
+            ->Get('Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.'),
+        Check   => 'Failed',
+        Comment => '',
     };
 
     # Get the config
@@ -391,11 +439,14 @@ sub _ConfigCheckTicketFrontendResponseFormat {
     # Does the SystemID contain non-digits?
     if ( $Config !~ /\$Data{"/ ) {
         $Data->{Check}   = 'OK';
-        $Data->{Comment} = " No \$Data{\"\"} found."
+        $Data->{Comment} = "\$Data{\"\"} " . $Self->{LanguageObject}->Get('was not found.');
     }
     else {
         $Data->{Comment}
-            = "Config option Ticket::Frontend::ResponseFormat cointains \$Data{\"\"}, use \$QData{\"\"} instand (seed default setting).";
+            = $Self->{LanguageObject}
+            ->Get('Config option Ticket::Frontend::ResponseFormat cointains')
+            . " \$Data{\"\"}, \$QData{\"\"} "
+            . $Self->{LanguageObject}->Get('should be used instand (see default setting).');
     }
     return $Data;
 }
@@ -405,10 +456,10 @@ sub _FileSystemCheck {
 
     my $Message = '';
     my $Data    = {
-        Name        => 'FileSystemCheck',
-        Description => 'Check if file system is writable.',
+        Name        => $Self->{LanguageObject}->Get('FileSystemCheck'),
+        Description => $Self->{LanguageObject}->Get('Check if file system is writable.'),
         Check       => 'Failed',
-        Comment     => 'The file system is writable.',
+        Comment     => $Self->{LanguageObject}->Get('The file system is writable.'),
     };
 
     my $Home = $Self->{ConfigObject}->Get('Home');
@@ -416,7 +467,7 @@ sub _FileSystemCheck {
     # check Home
     if ( !-e $Home ) {
         $Data->{Check}   = 'Failed';
-        $Data->{Comment} = "No such home directory: $Home!",
+        $Data->{Comment} = $Self->{LanguageObject}->Get('No such home directory') . ": $Home!",
             return $Data;
     }
     for (
@@ -435,7 +486,7 @@ sub _FileSystemCheck {
     }
 
     if ($Message) {
-        $Data->{Comment} = "Can't write file: $Message",
+        $Data->{Comment} = $Self->{LanguageObject}->Get("Can't write file") . ": $Message",
             return $Data;
     }
 
@@ -448,10 +499,10 @@ sub _PackageDeployCheck {
     my ( $Self, %Param ) = @_;
 
     my $Data = {
-        Name        => 'PackageDeployCheck',
-        Description => 'Check deployment of all packages.',
+        Name        => $Self->{LanguageObject}->Get('PackageDeployCheck'),
+        Description => $Self->{LanguageObject}->Get('Check deployment of all packages.'),
         Check       => 'OK',
-        Comment     => 'All packages are correctly installed.',
+        Comment     => $Self->{LanguageObject}->Get('All packages are correctly installed.'),
     };
 
     my $Message = '';
@@ -466,8 +517,9 @@ sub _PackageDeployCheck {
     }
 
     if ($Message) {
-        $Data->{Check}   = 'Critical';
-        $Data->{Comment} = "Packages not correctly installed: $Message.",
+        $Data->{Check} = 'Critical';
+        $Data->{Comment}
+            = $Self->{LanguageObject}->Get('Packages not correctly installed') . ": $Message.",
     }
 
     return $Data;
@@ -478,10 +530,10 @@ sub _InvalidUserLockedTicketSearch {
 
     # set the default message
     my $Data = {
-        Name        => 'InvalidUserLockedTicketSearch',
-        Description => 'Search for invalid user with locked tickets.',
+        Name        => $Self->{LanguageObject}->Get('InvalidUserLockedTicketSearch'),
+        Description => $Self->{LanguageObject}->Get('Search for invalid user with locked tickets.'),
         Check       => 'OK',
-        Comment     => 'There are no invalid users with locked tickets.',
+        Comment => $Self->{LanguageObject}->Get('There are no invalid users with locked tickets.'),
     };
 
     # get all users (because there is no function to get all invalid users)
@@ -523,8 +575,9 @@ sub _InvalidUserLockedTicketSearch {
     }
 
     my $UserString = join ', ', values %LockedTicketUser;
-    $Data->{Comment} = "These invalid users have locked tickets: $UserString";
-    $Data->{Check}   = 'Critical';
+    $Data->{Comment}
+        = $Self->{LanguageObject}->Get('These invalid users have locked tickets') . ": $UserString";
+    $Data->{Check} = 'Critical';
 
     return $Data;
 }
@@ -534,10 +587,12 @@ sub _DefaultUserCheck {
 
     # set the default message
     my $Data = {
-        Name        => 'DefaultUserCheck',
-        Description => 'Check if root@localhost account has the default password.',
-        Check       => 'OK',
-        Comment     => 'There is no active root@localhost with default password.',
+        Name        => $Self->{LanguageObject}->Get('DefaultUserCheck'),
+        Description => $Self->{LanguageObject}
+            ->Get('Check if root@localhost account has the default password.'),
+        Check   => 'OK',
+        Comment => $Self->{LanguageObject}
+            ->Get('There is no active root@localhost with default password.'),
     };
 
     # retrieve list of valid users
@@ -563,8 +618,9 @@ sub _DefaultUserCheck {
     );
     return $Data if !$DefaultPass;
 
-    $Data->{Comment} = "Change the password or invalidate the account 'root\@localhost'.";
-    $Data->{Check}   = 'Critical';
+    $Data->{Comment} = $Self->{LanguageObject}
+        ->Get("Change the password or invalidate the account 'root\@localhost'.");
+    $Data->{Check} = 'Critical';
 
     return $Data;
 }
@@ -573,10 +629,11 @@ sub _DefaultSOAPUserCheck {
     my ( $Self, %Param ) = @_;
 
     my $Data = {
-        Name        => 'SOAPCheck',
-        Description => 'Check default SOAP credentials.',
-        Comment     => 'You have not enabled SOAP or have set your own password.',
-        Check       => 'OK',
+        Name        => $Self->{LanguageObject}->Get('SOAPCheck'),
+        Description => $Self->{LanguageObject}->Get('Check default SOAP credentials.'),
+        Comment     => $Self->{LanguageObject}
+            ->Get('You have not enabled SOAP or have set your own password.'),
+        Check => 'OK',
     };
 
     my $SOAPUser     = $Self->{ConfigObject}->Get('SOAP::User')     || '';
@@ -585,7 +642,8 @@ sub _DefaultSOAPUserCheck {
     if ( $SOAPUser eq 'some_user' ) {
         if ( $SOAPPassword eq 'some_pass' || $SOAPPassword eq '' ) {
             $Data->{Check}   = 'Critical';
-            $Data->{Comment} = 'Please set a strong password for SOAP::Password in SysConfig.';
+            $Data->{Comment} = $Self->{LanguageObject}
+                ->Get('Please set a strong password for SOAP::Password in SysConfig.');
         }
     }
 
@@ -602,29 +660,32 @@ sub _GeneralSystemOverview {
 
     my $Check = 'OK';
 
-    $TableInfo .= 'Product=' . $Self->{ConfigObject}->Get('Product') .
+    $TableInfo
+        .= $Self->{LanguageObject}->Get('Product') . '='
+        . $Self->{ConfigObject}->Get('Product')
+        .
         ' ' . $Self->{ConfigObject}->Get('Version') . ';';
 
     my %Search = (
         1 => {
             TableName   => 'ticket',
-            Description => 'Tickets',
+            Description => $Self->{LanguageObject}->Get('Tickets'),
         },
         2 => {
             TableName   => 'article',
-            Description => 'Articles',
+            Description => $Self->{LanguageObject}->Get('Articles'),
         },
         3 => {
             TableName   => 'users',
-            Description => 'Agents',
+            Description => $Self->{LanguageObject}->Get('Agents'),
         },
         4 => {
             TableName   => 'roles',
-            Description => 'Roles',
+            Description => $Self->{LanguageObject}->Get('Roles'),
         },
         5 => {
             TableName   => 'groups',
-            Description => 'Groups',
+            Description => $Self->{LanguageObject}->Get('Groups'),
         },
     );
 
@@ -643,7 +704,8 @@ sub _GeneralSystemOverview {
     if ( $Search{1}->{Result} && $Search{2}->{Result} ) {
         my $AvgArticlesTicket = $Search{2}->{Result} / $Search{1}->{Result};
         $AvgArticlesTicket = sprintf( "%.2f", $AvgArticlesTicket );
-        $TableInfo .= "Articles per ticket (avg)=$AvgArticlesTicket;";
+        $TableInfo
+            .= $Self->{LanguageObject}->Get('Articles per ticket (avg)') . "=$AvgArticlesTicket;";
     }
 
     #  tickets per month (avg)
@@ -668,8 +730,10 @@ sub _GeneralSystemOverview {
     my $AverageTicketsMonth = $Search{1}->{Result} / $TicketWindowTime;
     $AverageTicketsMonth = sprintf( "%.2f", $AverageTicketsMonth );
     $TicketWindowTime    = sprintf( "%.2f", $TicketWindowTime );
-    $TableInfo .= "Months between first and last ticket=$TicketWindowTime;";
-    $TableInfo .= "Tickets per month (avg)=$AverageTicketsMonth;";
+    $TableInfo .= $Self->{LanguageObject}->Get('Months between first and last ticket')
+        . "=$TicketWindowTime;";
+    $TableInfo
+        .= $Self->{LanguageObject}->Get('Tickets per month (avg)') . "=$AverageTicketsMonth;";
 
     #  attachments
     my $StorageModule = $Self->{ConfigObject}->Get('Ticket::StorageModule') || '';
@@ -695,8 +759,10 @@ sub _GeneralSystemOverview {
             $AvgAttachmentTicket   = sprintf( "%.2f", $AvgAttachmentTicket );
         }
 
-        $TableInfo .= "Attachments per ticket (avg)=$AvgAttachmentTicket;";
-        $TableInfo .= "Attachment size (avg)=$AverageAttachmentSize KB;";
+        $TableInfo .= $Self->{LanguageObject}->Get('Attachments per ticket (avg)')
+            . "=$AvgAttachmentTicket;";
+        $TableInfo .= $Self->{LanguageObject}->Get('Attachment size (avg)')
+            . "=$AverageAttachmentSize KB;";
     }
 
     # customers
@@ -710,15 +776,16 @@ sub _GeneralSystemOverview {
         # months on seconds
         $Customers = $Row[0] || 0;
     }
-    $TableInfo .= "Customers with at least one ticket=$Customers;";
+    $TableInfo
+        .= $Self->{LanguageObject}->Get('Customers with at least one ticket') . "=$Customers;";
 
     # operating system
-    $TableInfo .= "Operating system=$^O;";
+    $TableInfo .= $Self->{LanguageObject}->Get('Operating system') . "=$^O;";
 
     $Data = {
-        Name        => 'GeneralSystemOverview',
-        Description => 'Display a general system overview',
-        Comment     => 'General information about your system.',
+        Name        => $Self->{LanguageObject}->Get('GeneralSystemOverview'),
+        Description => $Self->{LanguageObject}->Get('Display a general system overview'),
+        Comment     => $Self->{LanguageObject}->Get('General information about your system.'),
         Check       => $Check,
         BlockStyle  => 'TableDataSimple',
         TableInfo   => $TableInfo,

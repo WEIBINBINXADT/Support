@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Webserver/IIS.pm - all required system information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: IIS.pm,v 1.9 2010-02-09 21:29:16 ub Exp $
+# $Id: IIS.pm,v 1.10 2012-09-05 04:29:56 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.9 $) [1];
+$VERSION = qw($Revision: 1.10 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -25,9 +25,12 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject)) {
+    for (qw(ConfigObject LogObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
+
+    # create additional objects
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -76,16 +79,18 @@ sub _PerlExCheck {
     my $Check   = '';
     my $Message = '';
     if ( $ENV{'GATEWAY_INTERFACE'} && $ENV{'GATEWAY_INTERFACE'} =~ /^CGI-PerlEx/i ) {
-        $Check   = 'OK';
-        $Message = "PerlEx is in use ($ENV{'GATEWAY_INTERFACE'}).";
+        $Check = 'OK';
+        $Message
+            = $Self->{LanguageObject}->Get('PerlEx is in use') . " ($ENV{'GATEWAY_INTERFACE'}).";
     }
     else {
-        $Check   = 'Failed';
-        $Message = 'You should use PerlEx to increase your performance.';
+        $Check = 'Failed';
+        $Message
+            = $Self->{LanguageObject}->Get('You should use PerlEx to increase your performance.');
     }
     $Data = {
         Name        => 'PerlEx',
-        Description => 'Check if PerlEx is used.',
+        Description => $Self->{LanguageObject}->Get('Check if PerlEx is used.'),
         Comment     => $Message,
         Check       => $Check,
     };

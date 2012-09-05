@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/postgresql.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: postgresql.pm,v 1.21 2012-01-20 21:14:59 mb Exp $
+# $Id: postgresql.pm,v 1.22 2012-09-05 04:29:38 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.21 $) [1];
+$VERSION = qw($Revision: 1.22 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,13 +28,14 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
     # create additional objects
-    $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+    $Self->{XMLObject}      = Kernel::System::XML->new( %{$Self} );
+    $Self->{TimeObject}     = Kernel::System::Time->new( %{$Self} );
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -112,33 +113,33 @@ sub _TableCheck {
                 }
             }
             if ($Message) {
-                $Message = "nonexisting table(s): $Message.";
+                $Message = $Self->{LanguageObject}->Get('nonexisting table(s)') . ": $Message.";
             }
             else {
                 $Check   = 'OK';
-                $Message = "$Count tables checked.";
+                $Message = "$Count " . $Self->{LanguageObject}->Get('tables checked.');
             }
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
                 Comment     => $Message,
                 Check       => $Check,
             };
         }
         else {
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
-                Comment     => "Can't open file $File: $!",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+                Comment     => $Self->{LanguageObject}->Get("Can't open file") . " $File: $!",
                 Check       => 'Critical',
             };
         }
     }
     else {
         $Data = {
-            Name        => 'Table Check',
-            Description => 'Check existing framework tables.',
-            Comment     => "Can't find file $File!",
+            Name        => $Self->{LanguageObject}->Get('Table Check'),
+            Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+            Comment     => $Self->{LanguageObject}->Get("Can't find file") . " $File!",
             Check       => 'Critical',
         };
     }
@@ -161,18 +162,21 @@ sub _DateStyleCheck {
                 $Message = "$Row[1]";
             }
             else {
-                $Check   = 'Failed';
-                $Message = "Unknown DateStyle ($Row[1]) need ISO.";
+                $Check = 'Failed';
+                $Message
+                    = $Self->{LanguageObject}->Get('Unknown DateStyle')
+                    . " ($Row[1]) "
+                    . $Self->{LanguageObject}->Get('need ISO.');
             }
         }
     }
     $Data = {
-        Name        => 'DateStyle',
-        Description => 'Check DateStyle.',
+        Name        => $Self->{LanguageObject}->Get('DateStyle'),
+        Description => $Self->{LanguageObject}->Get('Check DateStyle.'),
         Comment     => $Message,
         Check       => $Check,
-        },
-        return $Data;
+    };
+    return $Data;
 }
 
 sub _UTF8ServerCheck {
@@ -183,12 +187,13 @@ sub _UTF8ServerCheck {
     # utf-8 server check
     if ( $Self->{ConfigObject}->Get('DefaultCharset') =~ /utf(\-8|8)/i ) {
         my $Check   = 'Failed';
-        my $Message = 'No server_encoding found.';
+        my $Message = $Self->{LanguageObject}->Get('No server_encoding found.');
         $Self->{DBObject}->Prepare( SQL => 'show all' );
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             if ( $Row[0] =~ /^server_encoding/i ) {
                 $Message
-                    = "Setting server_encoding found, but it's set to '$Row[1]' (need to be UNICODE or UTF8).";
+                    = $Self->{LanguageObject}->Get("Setting server_encoding found, but it's set to")
+                    . " '$Row[1]' " . $Self->{LanguageObject}->Get('(need to be UNICODE or UTF8).');
                 if ( $Row[1] =~ /(UNICODE|utf(8|\-8))/i ) {
                     $Check   = 'OK';
                     $Message = "$Row[1]";
@@ -196,8 +201,8 @@ sub _UTF8ServerCheck {
             }
         }
         $Data = {
-            Name        => 'Server Connection (utf8)',
-            Description => 'Check the utf8 server connection.',
+            Name        => $Self->{LanguageObject}->Get('Server Connection (utf8)'),
+            Description => $Self->{LanguageObject}->Get('Check the utf8 server connection.'),
             Comment     => $Message,
             Check       => $Check,
         };
@@ -213,12 +218,13 @@ sub _UTF8ClientCheck {
     # utf-8 client check
     if ( $Self->{ConfigObject}->Get('DefaultCharset') =~ /utf(\-8|8)/i ) {
         my $Check   = 'Failed';
-        my $Message = 'No client_encoding found.';
+        my $Message = $Self->{LanguageObject}->Get('No client_encoding found.');
         $Self->{DBObject}->Prepare( SQL => 'show all' );
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             if ( $Row[0] =~ /^client_encoding/i ) {
                 $Message
-                    = "Setting client_encoding found, but it's set to '$Row[1]' (need to be UNICODE or UTF8)";
+                    = $Self->{LanguageObject}->Get("Setting client_encoding found, but it's set to")
+                    . " '$Row[1]' " . $Self->{LanguageObject}->Get('(need to be UNICODE or UTF8)');
                 if ( $Row[1] =~ /(UNICODE|utf(8|\-8))/i ) {
                     $Check   = 'OK';
                     $Message = "$Row[1]";
@@ -226,8 +232,8 @@ sub _UTF8ClientCheck {
             }
         }
         $Data = {
-            Name        => 'Client Connection (utf8)',
-            Description => 'Check the utf8 client connection.',
+            Name        => $Self->{LanguageObject}->Get('Client Connection (utf8)'),
+            Description => $Self->{LanguageObject}->Get('Check the utf8 client connection.'),
             Comment     => $Message,
             Check       => $Check,
         };
@@ -242,7 +248,7 @@ sub _DatabaseSizeCheck {
 
     # display database size
     my $Check   = 'Failed';
-    my $Message = 'Could not determine database size.';
+    my $Message = $Self->{LanguageObject}->Get('Could not determine database size.');
     $Self->{DBObject}->Prepare(
         SQL   => "SELECT pg_size_pretty(pg_database_size(current_database()))",
         LIMIT => 1,
@@ -250,12 +256,12 @@ sub _DatabaseSizeCheck {
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] ) {
             $Check   = 'OK';
-            $Message = "Database size is $Row[0]";
+            $Message = $Self->{LanguageObject}->Get('Database size is') . " $Row[0]";
         }
     }
     $Data = {
-        Name        => 'Database Size',
-        Description => 'Size of the current database.',
+        Name        => $Self->{LanguageObject}->Get('Database Size'),
+        Description => $Self->{LanguageObject}->Get('Size of the current database.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -269,7 +275,7 @@ sub _VersionCheck {
 
     # version check
     my $Check   = 'Failed';
-    my $Message = 'No PostgreSQL version found.';
+    my $Message = $Self->{LanguageObject}->Get('No PostgreSQL version found.');
     $Self->{DBObject}->Prepare( SQL => 'show server_version' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^(\d{1,3}).*$/ ) {
@@ -279,17 +285,18 @@ sub _VersionCheck {
             }
             else {
                 $Check   = 'Failed';
-                $Message = "You use PostgreSQL version $Row[0], you should use 8.x or higner.";
+                $Message = $Self->{LanguageObject}->Get('You use PostgreSQL version') . " $Row[0], "
+                    . $Self->{LanguageObject}->Get('you should use 8.x or higner.');
             }
         }
         else {
             $Check   = 'Failed';
-            $Message = "Unknown PostgreSQL version $Row[0].";
+            $Message = $Self->{LanguageObject}->Get('Unknown PostgreSQL version') . " $Row[0].";
         }
     }
     $Data = {
-        Name        => 'Version',
-        Description => 'Check database version.',
+        Name        => $Self->{LanguageObject}->Get('Version'),
+        Description => $Self->{LanguageObject}->Get('Check database version.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -319,19 +326,23 @@ sub _CurrentTimestampCheck {
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
         $Check = 'OK';
         $Message
-            = 'There is no difference between application server time and database server time.';
+            = $Self->{LanguageObject}->Get(
+            'There is no difference between application server time and database server time.'
+            );
     }
     else {
         $Check = 'Failed';
         $Message
-            = 'There is a material difference ('
+            = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
-            . " seconds) between application server ($TimeApplicationServer) and database server ($TimeDatabaseServer) time.";
+            . $Self->{LanguageObject}->Get(' seconds) between application server (')
+            . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
+            . $TimeDatabaseServer . $Self->{LanguageObject}->Get(') time.');
     }
 
     $Data = {
-        Name        => 'Current Timestamp Check',
-        Description => 'Check "System Time" vs "Current Timestamp".',
+        Name        => $Self->{LanguageObject}->Get('Current Timestamp Check'),
+        Description => $Self->{LanguageObject}->Get('Check "System Time" vs "Current Timestamp".'),
         Comment     => $Message,
         Check       => $Check,
     };

@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Database/mssql.pm - all required system information
-# Copyright (C) 2001-2011 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: mssql.pm,v 1.19 2011-05-02 18:34:32 mb Exp $
+# $Id: mssql.pm,v 1.20 2012-09-05 04:33:39 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.19 $) [1];
+$VERSION = qw($Revision: 1.20 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,13 +28,14 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
     # create additional objects
-    $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+    $Self->{XMLObject}      = Kernel::System::XML->new( %{$Self} );
+    $Self->{TimeObject}     = Kernel::System::Time->new( %{$Self} );
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -81,7 +82,7 @@ sub _VersionCheck {
 
     # version check
     my $Check   = 'Failed';
-    my $Message = 'Could not determine Microsoft SQL Server version.';
+    my $Message = $Self->{LanguageObject}->Get('Could not determine Microsoft SQL Server version.');
     $Self->{DBObject}->Prepare(
         SQL   => 'SELECT @@version',
         Limit => 1,
@@ -93,8 +94,8 @@ sub _VersionCheck {
     }
 
     $Data = {
-        Name        => 'Version',
-        Description => 'Check database version.',
+        Name        => $Self->{LanguageObject}->Get('Version'),
+        Description => $Self->{LanguageObject}->Get('Check database version.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -108,20 +109,24 @@ sub _DatabaseSizeCheck {
 
     # Database size check
     my $Check   = 'Failed';
-    my $Message = 'Could not determine database size.';
+    my $Message = $Self->{LanguageObject}->Get('Could not determine database size.');
     $Self->{DBObject}->Prepare(
         SQL   => 'exec sp_spaceused',
         Limit => 1,
     );
 
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
-        $Message = "Database $Row[0] is $Row[1] large, of which $Row[2] is available.";
-        $Check   = 'OK';
+        $Message =
+            $Self->{LanguageObject}->Get('Database')
+            . " $Row[0] " . $Self->{LanguageObject}->Get('is') . " $Row[1] "
+            . $Self->{LanguageObject}->Get('large, of which')
+            . " $Row[2] " . $Self->{LanguageObject}->Get('is available.');
+        $Check = 'OK';
     }
 
     $Data = {
-        Name        => 'Size',
-        Description => 'Check database size.',
+        Name        => $Self->{LanguageObject}->Get('Size'),
+        Description => $Self->{LanguageObject}->Get('Check database size.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -135,7 +140,7 @@ sub _DatabaseHostnameCheck {
 
     # Database size check
     my $Check   = 'Failed';
-    my $Message = 'Could not determine database hostname.';
+    my $Message = $Self->{LanguageObject}->Get('Could not determine database hostname.');
 
     if ( my $DatabaseHost = $Self->{ConfigObject}->Get('DatabaseHost') ) {
         $Message = $DatabaseHost;
@@ -143,8 +148,8 @@ sub _DatabaseHostnameCheck {
     }
 
     $Data = {
-        Name        => 'Hostname',
-        Description => 'Check database hostname.',
+        Name        => $Self->{LanguageObject}->Get('Hostname'),
+        Description => $Self->{LanguageObject}->Get('Check database hostname.'),
         Comment     => $Message,
         Check       => $Check,
     };
@@ -192,33 +197,33 @@ sub _TableCheck {
                 }
             }
             if ($Message) {
-                $Message = "Table doesn't exist: $Message";
+                $Message = $Self->{LanguageObject}->Get("Table doesn't exist") . ": $Message";
             }
             else {
                 $Check   = 'OK';
-                $Message = "$Count tables.";
+                $Message = "$Count " . $Self->{LanguageObject}->Get('tables.');
             }
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
                 Comment     => $Message,
                 Check       => $Check,
             };
         }
         else {
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
-                Comment     => "Can't open file $File: $!",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+                Comment     => $Self->{LanguageObject}->Get("Can't open file") . " $File: $!",
                 Check       => 'Critical',
             };
         }
     }
     else {
         $Data = {
-            Name        => 'Table Check',
-            Description => 'Check existing framework tables.',
-            Comment     => "Can't find file $File!",
+            Name        => $Self->{LanguageObject}->Get('Table Check'),
+            Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+            Comment     => $Self->{LanguageObject}->Get("Can't find file") . " $File!",
             Check       => 'Failed',
         };
     }
@@ -248,19 +253,23 @@ sub _CurrentTimestampCheck {
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
         $Check = 'OK';
         $Message
-            = 'There is no difference between application server time and database server time.';
+            = $Self->{LanguageObject}->Get(
+            'There is no difference between application server time and database server time.'
+            );
     }
     else {
         $Check = 'Failed';
         $Message
-            = 'There is a material difference ('
+            = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
-            . " seconds) between application server ($TimeApplicationServer) and database server ($TimeDatabaseServer) time.";
+            . $Self->{LanguageObject}->Get(' seconds) between application server (')
+            . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
+            . $TimeDatabaseServer . $Self->{LanguageObject}->Get(') time.');
     }
 
     $Data = {
-        Name        => 'Current Timestamp Check',
-        Description => 'Check "System Time" vs "Current Timestamp".',
+        Name        => $Self->{LanguageObject}->Get('Current Timestamp Check'),
+        Description => $Self->{LanguageObject}->Get('Check "System Time" vs "Current Timestamp".'),
         Comment     => $Message,
         Check       => $Check,
     };

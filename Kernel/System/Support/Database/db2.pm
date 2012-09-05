@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Database/db2.pm - all required system information
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: db2.pm,v 1.12 2010-05-28 07:27:55 mb Exp $
+# $Id: db2.pm,v 1.13 2012-09-05 04:28:39 cg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
+$VERSION = qw($Revision: 1.13 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,13 +28,14 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject)) {
+    for (qw(ConfigObject LogObject MainObject DBObject EncodeObject LayoutObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
     # create additional objects
-    $Self->{XMLObject}  = Kernel::System::XML->new( %{$Self} );
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
+    $Self->{XMLObject}      = Kernel::System::XML->new( %{$Self} );
+    $Self->{TimeObject}     = Kernel::System::Time->new( %{$Self} );
+    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
 
     return $Self;
 }
@@ -112,33 +113,33 @@ sub _TableCheck {
                 }
             }
             if ($Message) {
-                $Message = "Table dosn't exists: $Message";
+                $Message = $Self->{LanguageObject}->Get("Table doesn't exist") . ": $Message";
             }
             else {
                 $Check   = 'OK';
-                $Message = "$Count Tables";
+                $Message = "$Count " . $Self->{LanguageObject}->Get('tables.');
             }
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
                 Comment     => $Message,
                 Check       => $Check,
             };
         }
         else {
             $Data = {
-                Name        => 'Table Check',
-                Description => 'Check existing framework tables.',
-                Comment     => "Can't open file $File: $!",
+                Name        => $Self->{LanguageObject}->Get('Table Check'),
+                Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+                Comment     => $Self->{LanguageObject}->Get("Can't open file") . " $File: $!",
                 Check       => 'Critical',
             };
         }
     }
     else {
         $Data = {
-            Name        => 'Table Check',
-            Description => 'Check existing framework tables.',
-            Comment     => "Can't find file $File!",
+            Name        => $Self->{LanguageObject}->Get('Table Check'),
+            Description => $Self->{LanguageObject}->Get('Check existing framework tables.'),
+            Comment     => $Self->{LanguageObject}->Get("Can't find file") . " $File!",
             Check       => 'Critical',
         };
     }
@@ -168,19 +169,23 @@ sub _CurrentTimestampCheck {
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
         $Check = 'OK';
         $Message
-            = 'There is no difference between application server time and database server time.';
+            = $Self->{LanguageObject}->Get(
+            'There is no difference between application server time and database server time.'
+            );
     }
     else {
         $Check = 'Failed';
         $Message
-            = 'There is a material difference ('
+            = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
-            . " seconds) between application server ($TimeApplicationServer) and database server ($TimeDatabaseServer) time.";
+            . $Self->{LanguageObject}->Get(' seconds) between application server (')
+            . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
+            . $TimeDatabaseServer . $Self->{LanguageObject}->Get(') time.');
     }
 
     $Data = {
-        Name        => 'Current Timestamp Check',
-        Description => 'Check "System Time" vs "Current Timestamp".',
+        Name        => $Self->{LanguageObject}->Get('Current Timestamp Check'),
+        Description => $Self->{LanguageObject}->Get('Check "System Time" vs "Current Timestamp".'),
         Comment     => $Message,
         Check       => $Check,
     };
