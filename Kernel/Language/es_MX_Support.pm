@@ -2,7 +2,7 @@
 # Kernel/Language/es_MX_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: es_MX_Support.pm,v 1.3 2012-09-20 06:23:11 mb Exp $
+# $Id: es_MX_Support.pm,v 1.4 2012-09-20 06:29:49 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -352,6 +352,7 @@ sub Data {
     $Self->{Translation}->{'You have not enabled SOAP or have set your own password.'} = 'No se encuentra habilitado SOAP o ha puesto su propia clave.';
     $Self->{Translation}->{'Please set a strong password for SOAP::Password in SysConfig.'} = 'Por favor ingrese una clave segura para SOAP::Password en la configuración.';
 
+    $Self->{Translation}->{'Install directory'} = '';
     $Self->{Translation}->{'Product'} = 'Producto';
     $Self->{Translation}->{'Tickets'} = 'Ticket';
     $Self->{Translation}->{'Articles'} = 'Articulos';

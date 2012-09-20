@@ -2,7 +2,7 @@
 # Kernel/Language/de_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: de_Support.pm,v 1.4 2012-09-20 06:23:11 mb Exp $
+# $Id: de_Support.pm,v 1.5 2012-09-20 06:29:49 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -294,6 +294,8 @@ sub Data {
 
     $Self->{Translation}->{'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'} =
         '';
+
+    $Self->{Translation}->{'Install directory'} = '';
     $Self->{Translation}->{'articles in your system.'} = '';
     $Self->{Translation}->{'Check Ticket::SearchIndexModule setting.'} = '';
 
