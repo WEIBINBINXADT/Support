@@ -2,7 +2,7 @@
 # Kernel/System/Support/OS.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: OS.pm,v 1.26 2012-09-04 04:10:55 cg Exp $
+# $Id: OS.pm,v 1.27 2012-09-20 06:23:11 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.26 $) [1];
+$VERSION = qw($Revision: 1.27 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -136,7 +136,7 @@ sub _DistributionCheck {
             };
         }
     }
-    elsif ( $^O =~ /win/i ) {
+    elsif ( $^O =~ /win32/i ) {
         $Self->{MainObject}->Require('Win32');
         my @WinVersion;
         no strict 'refs';
@@ -199,7 +199,7 @@ sub _KernelInfoCheck {
             };
         }
     }
-    elsif ( $^O =~ /win/i ) {
+    elsif ( $^O =~ /win32/i ) {
         return;
     }
     return $ReturnHash;
@@ -213,15 +213,32 @@ sub _PerlCheck {
     # check verison string
     my $Version = sprintf "%vd", $^V;
     my $OS      = sprintf "$^O", $^V;
+    my $Build   = '';
+
+    # ActivePerl detection
+    if ( $^O =~ /win32/i ) {
+        $Self->{MainObject}->Require('Win32');
+
+        # Win32::BuildNumber() is only available on ActivePerl, NOT on Strawberry.
+        no strict 'refs';
+        if ( defined &Win32::BuildNumber ) {
+            $Build = ' (ActiveState build ' . Win32::BuildNumber() . ')';
+        }
+        else {
+            $Build = ' (StrawberryPerl)';
+        }
+        use strict;
+    }
+
     if ( $Version =~ /(\d+)\.(\d+)\.(\d+)/i ) {
         if ( $1 <= 5 && $2 <= 8 && $3 <= 7 ) {
             $ReturnHash = {
                 Name        => $Self->{LanguageObject}->Get('PerlCheck'),
                 Description => $Self->{LanguageObject}->Get('Check Perl version.'),
                 Comment =>
-                    $Self->{LanguageObject}->Get('Your Perl') . " $Version ($OS) " .
+                    $Self->{LanguageObject}->Get('Your Perl') . " $Version$Build ($OS)" .
                     $Self->{LanguageObject}
-                    ->Get('is to old, you should upgrade to Perl 5.8.8 or higher.'),
+                    ->Get('is too old, you should upgrade to Perl 5.8.8 or higher.'),
                 Check => 'Failed',
             };
 
@@ -230,8 +247,8 @@ sub _PerlCheck {
             $ReturnHash = {
                 Name        => $Self->{LanguageObject}->Get('PerlCheck'),
                 Description => $Self->{LanguageObject}->Get('Check Perl version.'),
-                Comment     => "Perl $Version ($OS) " . $Self->{LanguageObject}->Get('is used.'),
-                Check       => 'OK',
+                Comment => "Perl $Version$Build ($OS) " . $Self->{LanguageObject}->Get('is used.'),
+                Check   => 'OK',
             };
         }
     }
@@ -240,10 +257,11 @@ sub _PerlCheck {
             Name        => $Self->{LanguageObject}->Get('PerlCheck'),
             Description => $Self->{LanguageObject}->Get('Check Perl version.'),
             Comment     => $Self->{LanguageObject}->Get('Unable to parse version string')
-                . " ($Version / $OS).",
+                . " ($Version$Build / $OS).",
             Check => 'Critical',
         };
     }
+
     return $ReturnHash;
 }
 
@@ -394,7 +412,7 @@ sub _MemorySwapCheck {
             }
         }
     }
-    elsif ( $^O =~ /win/i ) {
+    elsif ( $^O =~ /win32/i ) {
         return;
     }
 
@@ -476,7 +494,7 @@ sub _CPULoadCheck {
             }
         }
     }
-    elsif ( $^O =~ /win/i ) {
+    elsif ( $^O =~ /win32/i ) {
         return;
     }
     return $ReturnHash;

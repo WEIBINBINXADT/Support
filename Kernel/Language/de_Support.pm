@@ -2,7 +2,7 @@
 # Kernel/Language/de_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: de_Support.pm,v 1.3 2012-09-05 04:39:45 cg Exp $
+# $Id: de_Support.pm,v 1.4 2012-09-20 06:23:11 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -241,7 +241,7 @@ sub Data {
     $Self->{Translation}->{'PerlCheck'} = '';
     $Self->{Translation}->{'Check Perl version.'} = '';
     $Self->{Translation}->{'Your Perl'} = '';
-    $Self->{Translation}->{'is to old, you should upgrade to Perl 5.8.8 or higher.'} = '';
+    $Self->{Translation}->{'is too old, you should upgrade to Perl 5.8.8 or higher.'} = '';
     $Self->{Translation}->{'Unable to parse version string'} = '';
 
     $Self->{Translation}->{'PerlModulesCheck'} = '';

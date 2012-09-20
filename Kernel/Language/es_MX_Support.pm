@@ -2,7 +2,7 @@
 # Kernel/Language/es_MX_Support.pm - translation file
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: es_MX_Support.pm,v 1.2 2012-09-05 04:28:18 cg Exp $
+# $Id: es_MX_Support.pm,v 1.3 2012-09-20 06:23:11 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -241,7 +241,7 @@ sub Data {
     $Self->{Translation}->{'PerlCheck'} = 'Verificación Perl';
     $Self->{Translation}->{'Check Perl version.'} = 'Verifica la versión de Perl';
     $Self->{Translation}->{'Your Perl'} = 'La versión de Perl';
-    $Self->{Translation}->{'is to old, you should upgrade to Perl 5.8.8 or higher.'} = 'es muy antigüa, debe actualizar a Perl 5.8.8 o superior';
+    $Self->{Translation}->{'is too old, you should upgrade to Perl 5.8.8 or higher.'} = 'es muy antigüa, debe actualizar a Perl 5.8.8 o superior';
     $Self->{Translation}->{'Unable to parse version string'} = 'No es posible analizar la cadena de versión';
 
     $Self->{Translation}->{'PerlModulesCheck'} = 'Verificación de los módulos Perl';
