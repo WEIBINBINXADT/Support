@@ -2,7 +2,7 @@
 # Kernel/System/Support.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.53 2012-09-04 04:13:42 cg Exp $
+# $Id: Support.pm,v 1.54 2012-11-19 10:38:08 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.53 $) [1];
+$VERSION = qw($Revision: 1.54 $) [1];
 
 =head1 NAME
 
@@ -799,10 +799,10 @@ sub Download {
     my $DataHash = $Self->AdminChecksGet();
 
     $File{CheckContent} = $Self->XMLStringCreate( DataHash => $DataHash, );
-    $File{CheckFilename} = 'check.xml',
+    $File{CheckFilename} = 'check.xml';
 
-        # create application package
-        ( $File{AppContent}, $File{AppFilename} ) = $Self->ApplicationArchiveCreate();
+    # create application package
+    ( $File{AppContent}, $File{AppFilename} ) = $Self->ApplicationArchiveCreate();
 
     # create ARCHIVE log package
     ( $File{ArchContent}, $File{ArchFilename} ) = $Self->ARCHIVELogCreate();
@@ -1084,6 +1084,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.53 $ $Date: 2012-09-04 04:13:42 $
+$Revision: 1.54 $ $Date: 2012-11-19 10:38:08 $
 
 =cut
