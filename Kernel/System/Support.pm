@@ -2,7 +2,7 @@
 # Kernel/System/Support.pm - all required system information
 # Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.53 2012-09-04 04:13:42 cg Exp $
+# $Id: Support.pm,v 1.53.2.1 2012-12-13 12:54:29 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.53 $) [1];
+$VERSION = qw($Revision: 1.53.2.1 $) [1];
 
 =head1 NAME
 
@@ -352,6 +352,8 @@ sub ARCHIVELogCreate {
 sub _ARCHIVELogLookup {
     my ( $Self, %Param ) = @_;
 
+    my $Home = $Self->{ConfigObject}->Get('Home');
+
     my @List = glob("$Param{In}/*");
     FILE:
     for my $File (@List) {
@@ -359,7 +361,10 @@ sub _ARCHIVELogLookup {
         # clean up directory name
         $File =~ s/\/\//\//g;
 
-        # ignote cvs directories
+        # always stay in OTRS directory
+        next FILE if $File !~ /^\Q$Home\E/;
+
+        # ignore cvs directories
         next FILE if $File =~ /Entries|Repository|Root|CVS|ARCHIVE/;
 
         # if it's a directory
@@ -370,9 +375,10 @@ sub _ARCHIVELogLookup {
                 Home    => $Param{Home},
             );
             next FILE;
-
-            # print "Directory: $File\n";
         }
+
+        # ignore all non-regular files as links, pipes, sockets etc.
+        next FILE if ( !-f $File );
 
         # if it's a file
         my $OrigFile = $File;
@@ -1084,6 +1090,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.53 $ $Date: 2012-09-04 04:13:42 $
+$Revision: 1.53.2.1 $ $Date: 2012-12-13 12:54:29 $
 
 =cut
