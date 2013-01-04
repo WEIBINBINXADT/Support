@@ -1,8 +1,8 @@
 # --
 # Kernel/Modules/AdminSupport.pm - show support information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: AdminSupport.pm,v 1.40 2012-08-08 14:18:33 mh Exp $
+# $Id: AdminSupport.pm,v 1.41 2013-01-04 11:08:44 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -17,7 +17,7 @@ use warnings;
 use Kernel::System::Support;
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.40 $) [1];
+$VERSION = qw($Revision: 1.41 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -410,7 +410,14 @@ sub Run {
                         },
                     );
 
-                    my %TableValues = split /[=;]/, $RowHash->{TableInfo};
+                    my %TableValues;
+
+                    if ( ref $RowHash->{TableInfo} eq 'HASH' ) {
+                        %TableValues = %{ $RowHash->{TableInfo} };
+                    }
+                    else {
+                        %TableValues = split /[=;]/, $RowHash->{TableInfo};
+                    }
 
                     for my $Item ( sort keys %TableValues ) {
                         $Self->{LayoutObject}->Block(
