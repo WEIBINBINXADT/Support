@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Webserver/Apache.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: Apache.pm,v 1.15 2012-09-04 04:09:03 cg Exp $
+# $Id: Apache.pm,v 1.16 2013-01-04 11:10:18 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.15 $) [1];
+$VERSION = qw($Revision: 1.16 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -89,6 +89,81 @@ sub _ApacheVersionCheck {
         Description => $Self->{LanguageObject}->Get('Display web server version.'),
         Comment     => $Message,
         Check       => $Check,
+    };
+    return $Data;
+}
+
+sub _ApacheModDeflateCheck {
+    my ( $Self, %Param ) = @_;
+
+    my $Check   = 'Failed';
+    my $Message = $Self->{LanguageObject}->Get("You should enable mod_deflate.");
+
+    if ( $ENV{MOD_PERL} ) {
+        if ( Apache2::Module::loaded('mod_deflate.c') ) {
+            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get("mod_deflate is enabled.");
+        }
+    }
+    else {
+        # just skip if not running mod_perl2
+        return;
+    }
+    my $Data = {
+        Name        => 'Mod_deflate',
+        Description => $Self->{LanguageObject}
+            ->Get('Check if the system uses mod_deflate.'),
+        Comment => $Message,
+        Check   => $Check,
+    };
+    return $Data;
+}
+
+sub _ApacheModHeadersCheck {
+    my ( $Self, %Param ) = @_;
+
+    my $Check   = 'Failed';
+    my $Message = $Self->{LanguageObject}->Get("You should enable mod_headers.");
+
+    if ( $ENV{MOD_PERL} ) {
+        if ( Apache2::Module::loaded('mod_headers.c') ) {
+            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get("mod_headers is enabled.");
+        }
+    }
+    else {
+        # just skip if not running mod_perl2
+        return;
+    }
+    my $Data = {
+        Name        => 'Mod_headers',
+        Description => $Self->{LanguageObject}
+            ->Get('Check if the system uses mod_headers.'),
+        Comment => $Message,
+        Check   => $Check,
+    };
+    return $Data;
+}
+
+sub _ApacheEnvironmentCheck {
+    my ( $Self, %Param ) = @_;
+
+    my %Environment = %ENV;
+
+    for my $NotNeededString (
+        qw( HTTP_REFERER HTTP_CACHE_CONTROL REQUEST_URI SCRIPT_NAME HTTP_USER_AGENT HTTP_ACCEPT_LANGUAGE HTTP_ACCEPT_ENCODING HTTP_ACCEPT )
+        )
+    {
+        delete $Environment{$NotNeededString};
+    }
+
+    my $Data = {
+        Name        => $Self->{LanguageObject}->Get('Server Environment'),
+        Description => $Self->{LanguageObject}->Get('Display environment variables'),
+        Comment     => $Self->{LanguageObject}->Get('General information about your system.'),
+        Check       => 'OK',
+        BlockStyle  => 'TableDataSimple',
+        TableInfo   => \%Environment,
     };
     return $Data;
 }

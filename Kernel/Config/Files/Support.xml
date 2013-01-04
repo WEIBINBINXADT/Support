@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Application">
-    <CVS>$Id: Support.xml,v 1.17 2012-09-04 04:16:13 cg Exp $</CVS>
+    <CVS>$Id: Support.xml,v 1.18 2013-01-04 11:10:18 mb Exp $</CVS>
     <ConfigItem Name="Frontend::Module###AdminSupport" Required="1" Valid="1">
         <Description Translatable="1">Frontend module registration for the AdminSystemStatus object in the admin area.</Description>
         <Group>Support</Group>
@@ -147,9 +147,12 @@
         <Setting>
             <Hash>
                 <Item Key="ApacheVersionCheck">1</Item>
+                <Item Key="ApacheEnvironmentCheck">1</Item>
                 <Item Key="CGIAcceleratorCheck">1</Item>
                 <Item Key="ApacheDBICheck">1</Item>
                 <Item Key="ApacheReloadCheck">1</Item>
+                <Item Key="ApacheModDeflateCheck">1</Item>
+                <Item Key="ApacheModHeadersCheck">1</Item>
             </Hash>
         </Setting>
     </ConfigItem>
