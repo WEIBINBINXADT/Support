@@ -2,7 +2,7 @@
 # CHANGES - change log of the Support module for OTRS
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: CHANGES-Support,v 1.22 2013-01-04 11:10:18 mb Exp $
+# $Id: CHANGES-Support,v 1.23 2013-01-16 09:41:21 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -10,8 +10,10 @@
 # --
 
 1.4.2 2013-??-??
- - Added Apache tests for mod_deflate and mod_headers.
- - Added Apache test that shows all server variables.
+ - 2013-01-16 Made sure the new color output of CheckModules on the console does
+    does not provide cluttered ansi codes in Support Module output.
+ - 2013-01-04 Added Apache tests for mod_deflate and mod_headers.
+ - 2013-01-04 Added Apache test that shows all server variables.
 
 1.4.1 2012-10-11
  - Init release for OTRS 3.2.
