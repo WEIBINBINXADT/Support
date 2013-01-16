@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/OS.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: OS.pm,v 1.28 2012-12-21 14:22:41 mb Exp $
+# $Id: OS.pm,v 1.29 2013-01-16 09:38:02 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.28 $) [1];
+$VERSION = qw($Revision: 1.29 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -272,10 +272,10 @@ sub _PerlModulesCheck {
     my $Home       = $Self->{ConfigObject}->Get('Home');
     my $TmpSumString;
 
-    if ( open( $TmpSumString, "perl $Home/bin/otrs.CheckModules.pl |" ) ) {
+    if ( open( $TmpSumString, "$^X $Home/bin/otrs.CheckModules.pl nocolors |" ) ) {
 
         my $TmpLog;
-        open( $TmpSumString, "perl $Home/bin/otrs.CheckModules.pl |" );
+        open( $TmpSumString, "$^X $Home/bin/otrs.CheckModules.pl nocolors |" );
 
         while (<$TmpSumString>) {
             $TmpLog .= $_;
