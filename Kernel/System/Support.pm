@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.55 2012-12-13 12:53:51 mg Exp $
+# $Id: Support.pm,v 1.56 2013-01-17 08:42:59 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.55 $) [1];
+$VERSION = qw($Revision: 1.56 $) [1];
 
 =head1 NAME
 
@@ -155,6 +155,21 @@ sub AdminChecksGet {
 
         # get admin check data
         my $AdminCheckRef = $SupportObject->AdminChecksGet();
+
+        # TableInfo can contain a hash ref, we have to flatten it
+        # so we can provide valid info to the Check file later on
+
+        my $TestCounter = 0;
+        for my $Check (@$AdminCheckRef) {
+            $TestCounter++;
+            if ( ref $Check->{TableInfo} eq 'HASH' ) {
+                my $String;
+                for my $Item ( sort keys %{ $Check->{TableInfo} } ) {
+                    $String .= "$Item = $Check->{TableInfo}->{$Item}\n";
+                }
+                $AdminCheckRef->[ $TestCounter - 1 ]->{TableInfo} = $String;
+            }
+        }
 
         # check if return value is a valid array reference
         if ( !$AdminCheckRef || ref $AdminCheckRef ne 'ARRAY' || !@{$AdminCheckRef} ) {
@@ -1090,6 +1105,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.55 $ $Date: 2012-12-13 12:53:51 $
+$Revision: 1.56 $ $Date: 2013-01-17 08:42:59 $
 
 =cut
