@@ -2,7 +2,7 @@
 # Kernel/System/Support.pm - all required system information
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: Support.pm,v 1.56 2013-01-17 08:42:59 mb Exp $
+# $Id: Support.pm,v 1.57 2013-01-23 11:35:25 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.56 $) [1];
+$VERSION = qw($Revision: 1.57 $) [1];
 
 =head1 NAME
 
@@ -99,7 +99,9 @@ sub new {
 
 get a hash reference with possibility checks.
 
-    my $List = $Support->AdminChecksGet();
+    my $List = $Support->AdminChecksGet(
+        Flatten => 1, # optional, to flatten hash refs in output, only needed for generating XML output.
+    );
 
 =cut
 
@@ -156,13 +158,13 @@ sub AdminChecksGet {
         # get admin check data
         my $AdminCheckRef = $SupportObject->AdminChecksGet();
 
-        # TableInfo can contain a hash ref, we have to flatten it
+        # TableInfo can contain a hash ref, check if we have to flatten it
         # so we can provide valid info to the Check file later on
 
         my $TestCounter = 0;
         for my $Check (@$AdminCheckRef) {
             $TestCounter++;
-            if ( ref $Check->{TableInfo} eq 'HASH' ) {
+            if ( ref $Check->{TableInfo} eq 'HASH' && $Param{Flatten} ) {
                 my $String;
                 for my $Item ( sort keys %{ $Check->{TableInfo} } ) {
                     $String .= "$Item = $Check->{TableInfo}->{$Item}\n";
@@ -701,7 +703,9 @@ sub SendInfo {
     my ( $LogPreContent, $LogPreFilename ) = $Self->LogLast( Type => 'log_pre' );
 
     # create check package
-    my $DataHash = $Self->AdminChecksGet();
+    my $DataHash = $Self->AdminChecksGet(
+        Flatten => 1,
+    );
     my $XMLCheck = $Self->XMLStringCreate( DataHash => $DataHash );
 
     # create application package
@@ -817,7 +821,9 @@ sub Download {
     ( $File{LogPreContent}, $File{LogPreFilename} ) = $Self->LogLast( Type => 'log_pre' );
 
     # create check package
-    my $DataHash = $Self->AdminChecksGet();
+    my $DataHash = $Self->AdminChecksGet(
+        Flatten => 1,
+    );
 
     $File{CheckContent} = $Self->XMLStringCreate( DataHash => $DataHash, );
     $File{CheckFilename} = 'check.xml';
@@ -1105,6 +1111,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.56 $ $Date: 2013-01-17 08:42:59 $
+$Revision: 1.57 $ $Date: 2013-01-23 11:35:25 $
 
 =cut
