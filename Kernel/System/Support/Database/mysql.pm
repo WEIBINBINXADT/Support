@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Database/mysql.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: mysql.pm,v 1.34 2012-09-04 04:07:50 cg Exp $
+# $Id: mysql.pm,v 1.35 2013-01-23 09:23:07 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.34 $) [1];
+$VERSION = qw($Revision: 1.35 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -340,6 +340,60 @@ sub _QueryCacheSizeCheck {
         Description => $Self->{LanguageObject}->Get('Check "query_cache_size" setting.'),
         Comment     => $Message,
         Check       => $Check,
+    };
+    return $Data;
+}
+
+sub _StorageEngineCheck {
+    my ( $Self, %Param ) = @_;
+
+    $Self->{DBObject}->Prepare( SQL => "show variables where variable_name = 'storage_engine'" );
+    my $StorageEngine;
+    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        $StorageEngine = $Row[1];
+    }
+    my $Data = {
+        Name        => $Self->{LanguageObject}->Get('Default Storage Engine'),
+        Description => $Self->{LanguageObject}->Get('Check Default Storage Engine.'),
+        Comment     => $Self->{LanguageObject}->Get('The default storage engine is')
+            . " $StorageEngine.",
+        Check => 'OK',
+    };
+    return $Data;
+}
+
+sub _TablesWithDifferentStorageEngineCheck {
+    my ( $Self, %Param ) = @_;
+
+    my $Check   = 'OK';
+    my $Comment = $Self->{LanguageObject}->Get('No tables found with different storage engine.');
+    $Self->{DBObject}->Prepare( SQL => "show variables where variable_name != 'storage_engine'" );
+    my $StorageEngine;
+    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        $StorageEngine = $Row[1];
+    }
+
+    $Self->{DBObject}->Prepare(
+        SQL  => "show table status where engine = ?",
+        Bind => [ \$StorageEngine ],
+    );
+    my @Tables;
+    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        push @Tables, $Row[0];
+    }
+
+    if (@Tables) {
+        $Check   = 'Failed';
+        $Comment = $Self->{LanguageObject}->Get('These tables use a different storage engine');
+        $Comment .= ': ' . join( ', ', @Tables );
+    }
+
+    my $Data = {
+        Name        => $Self->{LanguageObject}->Get('Tables with different storage engine'),
+        Description => $Self->{LanguageObject}
+            ->Get('Test if there are tables with a different storage engine.'),
+        Comment => $Comment,
+        Check   => $Check,
     };
     return $Data;
 }

@@ -2,14 +2,22 @@
 # CHANGES - change log of the Support module for OTRS
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: CHANGES-Support,v 1.23 2013-01-16 09:41:21 mb Exp $
+# $Id: CHANGES-Support,v 1.24 2013-01-23 09:23:07 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-1.4.2 2013-??-??
+1.4.4 2013-??-??
+ - 2013-01-23 Added tests for MySQL database to show the default storage engine, and to
+    test if there are tables in the database with a different storage engine than
+    the default.
+
+1.4.3 2013-01-17
+ - 2013-01-17 Make sure Checks.xml output also includes Web server check.
+
+1.4.2 2013-01-17
  - 2013-01-16 Made sure the new color output of CheckModules on the console does
     does not provide cluttered ansi codes in Support Module output.
  - 2013-01-04 Added Apache tests for mod_deflate and mod_headers.
