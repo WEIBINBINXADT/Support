@@ -2,7 +2,7 @@
 # CHANGES - change log of the Support module for OTRS
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: CHANGES-Support,v 1.25 2013-01-23 11:35:26 mb Exp $
+# $Id: CHANGES-Support,v 1.26 2013-01-23 13:01:40 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -10,6 +10,7 @@
 # --
 
 1.4.4 2013-??-??
+ - 2013-01-23 Corrected CheckModules output under mod_perl.
  - 2013-01-23 Added new parameter for AdminChecksGet to indicate if the result
     needs to be flattened (for the check.xml) or not (for display).
  - 2013-01-23 Added tests for MySQL database to show the default storage engine, and to
