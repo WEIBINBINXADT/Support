@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/mysql.pm - all required system information
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: mysql.pm,v 1.35 2013-01-23 09:23:07 mb Exp $
+# $Id: mysql.pm,v 1.36 2013-01-23 16:38:27 cr Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.35 $) [1];
+$VERSION = qw($Revision: 1.36 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -367,14 +367,14 @@ sub _TablesWithDifferentStorageEngineCheck {
 
     my $Check   = 'OK';
     my $Comment = $Self->{LanguageObject}->Get('No tables found with different storage engine.');
-    $Self->{DBObject}->Prepare( SQL => "show variables where variable_name != 'storage_engine'" );
+    $Self->{DBObject}->Prepare( SQL => "show variables where variable_name = 'storage_engine'" );
     my $StorageEngine;
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         $StorageEngine = $Row[1];
     }
 
     $Self->{DBObject}->Prepare(
-        SQL  => "show table status where engine = ?",
+        SQL  => "show table status where engine != ?",
         Bind => [ \$StorageEngine ],
     );
     my @Tables;
