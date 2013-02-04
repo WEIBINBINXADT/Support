@@ -1,8 +1,8 @@
 # --
 # Kernel/System/Support/Database/oracle.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: oracle.pm,v 1.25 2012-09-05 04:29:19 cg Exp $
+# $Id: oracle.pm,v 1.26 2013-02-04 14:57:12 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.25 $) [1];
+$VERSION = qw($Revision: 1.26 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -85,7 +85,7 @@ sub _OracleHomeCheck {
     my $Message = $Self->{LanguageObject}->Get('No ORACLE_HOME setting found.');
     if ( $ENV{ORACLE_HOME} ) {
         if ( !-e $ENV{ORACLE_HOME} ) {
-            $Message = $Self->{LanguageObject}->Get("ORACLE_HOME don't exists")
+            $Message = $Self->{LanguageObject}->Get("ORACLE_HOME does not exist.")
                 . " ($ENV{ORACLE_HOME}).";
             $Check = 'Failed';
         }
