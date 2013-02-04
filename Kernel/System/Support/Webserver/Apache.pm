@@ -2,7 +2,7 @@
 # Kernel/System/Support/Webserver/Apache.pm - all required system information
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: Apache.pm,v 1.16 2013-01-04 11:10:18 mb Exp $
+# $Id: Apache.pm,v 1.17 2013-02-04 07:09:47 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.16 $) [1];
+$VERSION = qw($Revision: 1.17 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -151,7 +151,9 @@ sub _ApacheEnvironmentCheck {
     my %Environment = %ENV;
 
     for my $NotNeededString (
-        qw( HTTP_REFERER HTTP_CACHE_CONTROL REQUEST_URI SCRIPT_NAME HTTP_USER_AGENT HTTP_ACCEPT_LANGUAGE HTTP_ACCEPT_ENCODING HTTP_ACCEPT )
+        qw( HTTP_REFERER         HTTP_CACHE_CONTROL   HTTP_COOKIE    HTTP_USER_AGENT
+        HTTP_ACCEPT_LANGUAGE HTTP_ACCEPT_ENCODING HTTP_ACCEPT
+        QUERY_STRING         REQUEST_METHOD       REQUEST_URI    SCRIPT_NAME )
         )
     {
         delete $Environment{$NotNeededString};
