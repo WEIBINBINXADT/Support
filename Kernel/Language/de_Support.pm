@@ -1,8 +1,8 @@
 # --
 # Kernel/Language/de_Support.pm - translation file
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: de_Support.pm,v 1.5 2012-09-20 06:29:49 mb Exp $
+# $Id: de_Support.pm,v 1.6 2013-04-16 13:03:20 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -30,9 +30,9 @@ sub Data {
     $Self->{Translation}->{'Bugzilla ID'} = '';
     $Self->{Translation}->{'If you\'ve already added a Bugzilla report at bugs.otrs.org, please add your Bugzilla ID here.'} =
         '';
-    $Self->{Translation}->{'Service Subscription'} = '';
+    $Self->{Translation}->{'Service Contract'} = 'Wartungsvertrag';
     $Self->{Translation}->{'Please recommend me a Service Subscription to optimize my OTRS'} =
-        '';
+        'Bitte empfehlen Sie mir einen Wartungsvertrag zur Optimierung meines OTRS';
     $Self->{Translation}->{'Can\'t create support package, because you work currently with the system user root@localhost and your admin email address is not yet configured. Please define the admin email setting in the SysConfig module and don\'t use the user root@localhost for working with OTRS.'} =
         '';
     $Self->{Translation}->{'Please confirm the confidential information to continue.'} = '';

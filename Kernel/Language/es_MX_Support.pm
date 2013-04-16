@@ -1,8 +1,8 @@
 # --
 # Kernel/Language/es_MX_Support.pm - translation file
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: es_MX_Support.pm,v 1.4 2012-09-20 06:29:49 mb Exp $
+# $Id: es_MX_Support.pm,v 1.5 2013-04-16 13:03:20 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -30,9 +30,9 @@ sub Data {
     $Self->{Translation}->{'Bugzilla ID'} = 'Identificador Bugzilla';
     $Self->{Translation}->{'If you\'ve already added a Bugzilla report at bugs.otrs.org, please add your Bugzilla ID here.'} =
         'Si ya ha agregado un reporte de error en bugs.otrs.org, por favor agregue su identificador de Bugzilla aqui.';
-    $Self->{Translation}->{'Service Subscription'} = 'Servicio de suscripción';
-    $Self->{Translation}->{'Please recommend me a Service Subscription to optimize my OTRS'} =
-        'Por favor recomiendeme un servicio de suscripción para optimizar mi instalación de OTRS';
+    $Self->{Translation}->{'Service Contract'} = '';
+    $Self->{Translation}->{'Please recommend me a Service Contract to optimize my OTRS'} =
+        '';
     $Self->{Translation}->{'Can\'t create support package, because you work currently with the system user root@localhost and your admin email address is not yet configured. Please define the admin email setting in the SysConfig module and don\'t use the user root@localhost for working with OTRS.'} =
         'No es posible crear un paquete de soporte, debido a que se encuentra actualmente utilizando el usuario de sistema root@localhost, y su cuenta de correo electrónico para administración no se encuentra configurada, por favor defina las configuraciones pertinentes para dicho correo electrónico en el modulo de Configuración del sistema y no utilize el usuario root@localhost para trabajar con OTRS.';
     $Self->{Translation}->{'Please confirm the confidential information to continue.'} = 'Por favor confirme su información confidencial para continuar.';
