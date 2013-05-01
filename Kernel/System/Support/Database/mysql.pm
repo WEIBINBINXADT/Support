@@ -2,7 +2,7 @@
 # Kernel/System/Support/Database/mysql.pm - all required system information
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: mysql.pm,v 1.36 2013-01-23 16:38:27 cr Exp $
+# $Id: mysql.pm,v 1.37 2013-05-01 10:24:39 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +18,7 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.36 $) [1];
+$VERSION = qw($Revision: 1.37 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -280,11 +280,11 @@ sub _MaxAllowedPackageCheck {
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^max_allowed_packet/i ) {
-            if ( $Row[1] < 1024 * 1024 * 7 ) {
+            if ( $Row[1] < 1024 * 1024 * 20 ) {
                 $Row[1]  = int( $Row[1] / 1024 / 1024 );
                 $Check   = 'Failed';
                 $Message = '"max_allowed_packet" ' .
-                    $Self->{LanguageObject}->Get("should be higher than 7 MB (it's")
+                    $Self->{LanguageObject}->Get("should be higher than 20 MB (it's")
                     . " $Row[1] MB).";
             }
             else {

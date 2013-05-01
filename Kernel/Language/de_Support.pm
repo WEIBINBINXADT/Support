@@ -2,7 +2,7 @@
 # Kernel/Language/de_Support.pm - translation file
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: de_Support.pm,v 1.7 2013-04-25 08:28:26 mh Exp $
+# $Id: de_Support.pm,v 1.8 2013-05-01 10:24:39 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -101,7 +101,7 @@ sub Data {
     $Self->{Translation}->{'Your charset collation is set to'} = '';
 
     $Self->{Translation}->{'No "max_allowed_packet" configuration found.'} = '';
-    $Self->{Translation}->{"should be higher than 7 MB (it's"} = '';
+    $Self->{Translation}->{"should be higher than 20 MB (it's"} = '';
     $Self->{Translation}->{'Your configuration setting is'} = '';
     $Self->{Translation}->{'Max Package Size'} = '';
     $Self->{Translation}->{'Check "max_allowed_packet" setting.'} = '';

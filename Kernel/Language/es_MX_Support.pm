@@ -2,7 +2,7 @@
 # Kernel/Language/es_MX_Support.pm - translation file
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: es_MX_Support.pm,v 1.5 2013-04-16 13:03:20 mg Exp $
+# $Id: es_MX_Support.pm,v 1.6 2013-05-01 10:24:39 mb Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -101,7 +101,7 @@ sub Data {
     $Self->{Translation}->{'Your charset collation is set to'} = 'El cotejado de juego de caracteres se encuentra colocado a';
 
     $Self->{Translation}->{'No "max_allowed_packet" configuration found.'} = 'No se ha encontrado la configuración "max_allowed_packet"';
-    $Self->{Translation}->{"should be higher than 7 MB (it's"} = 'Debería ser mayor a 7 MB (es';
+    $Self->{Translation}->{"should be higher than 20 MB (it's"} = 'Debería ser mayor a 20 MB (es';
     $Self->{Translation}->{'Your configuration setting is'} = 'La opción de configuración es';
     $Self->{Translation}->{'Max Package Size'} = 'Tamaño máximo de paquete';
     $Self->{Translation}->{'Check "max_allowed_packet" setting.'} = 'Verifica la configuración "max_allowed_packet"';
