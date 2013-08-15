@@ -3,7 +3,7 @@
     <CVS>$Id: Support.sopm,v 1.32 2012-10-11 04:55:54 cg Exp $</CVS>
     <Name>Support</Name>
     <Version>0.0.0</Version>
-    <Framework>3.2.x</Framework>
+    <Framework>3.3.x</Framework>
     <Vendor>OTRS AG</Vendor>
     <URL>http://otrs.org/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
