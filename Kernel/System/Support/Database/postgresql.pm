@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support/Database/postgresql.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: postgresql.pm,v 1.22 2012-09-05 04:29:38 cg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +16,6 @@ use Kernel::System::XML;
 use Kernel::System::Time;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.22 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -88,7 +85,7 @@ sub _TableCheck {
         my $Message = '';
         my $Content = '';
         my $In;
-        if ( open( $In, '<', $File ) ) {
+        if ( open( $In, '<', $File ) ) {    ## no critic
             while (<$In>) {
                 $Content .= $_;
             }

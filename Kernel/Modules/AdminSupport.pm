@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminSupport.pm - show support information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminSupport.pm,v 1.41 2013-01-04 11:08:44 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,9 +13,6 @@ use strict;
 use warnings;
 
 use Kernel::System::Support;
-
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.41 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;

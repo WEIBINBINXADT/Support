@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Support.pm,v 1.57 2013-01-23 11:35:25 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +23,6 @@ use MIME::Base64;
 use Archive::Tar;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.57 $) [1];
 
 =head1 NAME
 
@@ -300,7 +297,9 @@ sub ModuleCheck {
     my $Home = $Self->{ConfigObject}->Get('Home');
     my $TmpSumString;
     my $TmpLog;
-    open( $TmpSumString, "perl $Home/bin/otrs.CheckModules.pl |" );
+    ## no critic
+    open( $TmpSumString, "-|", "perl $Home/bin/otrs.CheckModules.pl" );
+    ## use critic
 
     while (<$TmpSumString>) {
         $TmpLog .= $_;
@@ -329,7 +328,7 @@ sub ARCHIVELogCreate {
     my $Archive = $Self->{ConfigObject}->Get('Home') . '/ARCHIVE';
 
     my $Handle;
-    if ( !open( $Handle, '<', $Archive ) ) {
+    if ( !open( $Handle, '<', $Archive ) ) {    ## no critic
         my $ARCHIVEEmpty = "Can't open $Archive: $!";
 
         # log info
@@ -410,16 +409,16 @@ sub _ARCHIVELogLookup {
         # next if not readable
         my $Content = '';
         my $In;
-        if ( !open( $In, '<', $OrigFile ) ) {
+        if ( !open( $In, '<', $OrigFile ) ) {    ## no critic
             $Self->{LogObject}->Log(
                 Priority => 'error',
                 Message  => "Can't read: $OrigFile: $!",
             );
             next FILE;
         }
-        my $ctx = Digest::MD5->new;
-        $ctx->addfile(*$In);
-        my $Digest = $ctx->hexdigest();
+        my $CTX = Digest::MD5->new();
+        $CTX->addfile(*$In);
+        my $Digest = $CTX->hexdigest();
         close $In;
         if ( !$Param{Compare}->{$File} ) {
             $Param{Compare}->{$File} = "New $File";
@@ -521,7 +520,7 @@ sub ApplicationArchiveCreate {
 
     # add files to the tar archive
     my $Tar;
-    if ( !open( $Tar, '<', $Archive ) ) {
+    if ( !open( $Tar, '<', $Archive ) ) {    ## no critic
 
         # log info
         $Self->{LogObject}->Log(
@@ -811,9 +810,11 @@ sub Download {
         Message  => 'Download start',
     );
 
+    ## no critic
     my ( $s, $m, $h, $D, $M, $Y, $wd, $yd, $dst ) = $Self->{TimeObject}->SystemTime2Date(
         SystemTime => $Self->{TimeObject}->SystemTime(),
     );
+    ## use critic
     my $Filename = "SupportInfo_$Y-$M-$D" . '_' . "$h-$m";
 
     # create log package
@@ -871,7 +872,7 @@ sub Download {
     for my $Key (qw(Body LogPre Check App Arch ModuleCheck LogPost OPMInfo)) {
         if ( $File{ $Key . 'Filename' } && $File{ $Key . 'Content' } ) {
             my $Filename = $TempDir . '/' . $File{ $Key . 'Filename' };
-            open( my $Out, '>', $Filename );
+            open( my $Out, '>', $Filename );    ## no critic
             binmode($Out);
             print $Out ${ $File{ $Key . 'Content' } };
             close $Out;
@@ -886,7 +887,7 @@ sub Download {
     $TarObject->write( $Archive, 0 ) || die "Could not write: $_!";
 
     # add files to the tar archive
-    open( my $Tar, '<', $Archive );
+    open( my $Tar, '<', $Archive );    ## no critic
     binmode $Tar;
     my $TmpTar = do { local $/; <$Tar> };
     close $Tar;
@@ -1106,11 +1107,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.57 $ $Date: 2013-01-23 11:35:25 $
 
 =cut

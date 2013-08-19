@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support/Webserver.pm - all required system information
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Webserver.pm,v 1.11 2012-09-04 04:12:46 cg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +13,6 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.11 $) [1];
 
 =head1 NAME
 
@@ -166,11 +163,5 @@ This software is part of the OTRS project (http://otrs.org/).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.11 $ $Date: 2012-09-04 04:12:46 $
 
 =cut

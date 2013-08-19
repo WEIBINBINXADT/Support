@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support/Webserver/Apache.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Apache.pm,v 1.17 2013-02-04 07:09:47 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +13,6 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.17 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -222,9 +219,9 @@ sub _ApacheReloadCheck {
     my $Check   = 'Failed';
     my $Message = '';
     if ( $ENV{MOD_PERL} ) {
-        eval "require mod_perl";
-        if ( defined $mod_perl::VERSION ) {
-            if ( $mod_perl::VERSION >= 1.99 ) {
+        eval "require mod_perl";    ## no critic
+        if ( defined $mod_perl::VERSION ) {    ## no critic
+            if ( $mod_perl::VERSION >= 1.99 ) {    ## no critic
 
                 # check if Apache::Reload is loaded
                 my $ApacheReload = 0;

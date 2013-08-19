@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support/OS.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: OS.pm,v 1.30 2013-01-23 13:01:40 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +13,6 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.30 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -79,7 +76,7 @@ sub _DistributionCheck {
     if ( $^O =~ /(linux|unix|netbsd|darwin)/i ) {
         my $TmpLine = "";
         my $Distribution;
-        if ( $^O =~ /darwin/i && open( $Distribution, "sw_vers |" ) ) {
+        if ( $^O =~ /darwin/i && open( $Distribution, "-|", "sw_vers" ) ) {    ## no critic
             while (<$Distribution>) {
                 $TmpLine .= $_;
             }
@@ -111,7 +108,9 @@ sub _DistributionCheck {
                 Check       => 'OK',
             };
         }
+        ## no critic
         elsif ( open( $Distribution, '<', "/etc/issue" ) ) {
+            ## use critic
             while (<$Distribution>) {
                 $TmpLine .= $_;
             }
@@ -139,7 +138,7 @@ sub _DistributionCheck {
     elsif ( $^O =~ /win32/i ) {
         $Self->{MainObject}->Require('Win32');
         my @WinVersion;
-        no strict 'refs';
+        no strict 'refs';    ## no critic
         if ( defined &Win32::GetOSDisplayName ) {
             @WinVersion = Win32::GetOSDisplayName();
         }
@@ -174,7 +173,7 @@ sub _KernelInfoCheck {
     if ( $^O =~ /(linux|unix|netbsd|freebsd|darwin)/i ) {
         my $TmpLine = "";
         my $KernelInfo;
-        if ( open( $KernelInfo, "uname -a |" ) ) {
+        if ( open( $KernelInfo, "-|", "uname -a" ) ) {    ## no critic
             while (<$KernelInfo>) {
                 $TmpLine .= $_;
             }
@@ -220,7 +219,7 @@ sub _PerlCheck {
         $Self->{MainObject}->Require('Win32');
 
         # Win32::BuildNumber() is only available on ActivePerl, NOT on Strawberry.
-        no strict 'refs';
+        no strict 'refs';    ## no critic
         if ( defined &Win32::BuildNumber ) {
             $Build = ' (ActiveState build ' . Win32::BuildNumber() . ')';
         }
@@ -272,10 +271,14 @@ sub _PerlModulesCheck {
     my $Home       = $Self->{ConfigObject}->Get('Home');
     my $TmpSumString;
 
-    if ( open( $TmpSumString, "perl $Home/bin/otrs.CheckModules.pl nocolors |" ) ) {
+    ## no critic
+    if ( open( $TmpSumString, "-|", "perl $Home/bin/otrs.CheckModules.pl nocolors" ) ) {
+        ## use critic
 
         my $TmpLog;
-        open( $TmpSumString, "perl $Home/bin/otrs.CheckModules.pl nocolors |" );
+        ## no critic
+        open( $TmpSumString, "-|", "perl $Home/bin/otrs.CheckModules.pl nocolors" );
+        ## use critic
 
         while (<$TmpSumString>) {
             $TmpLog .= $_;
@@ -336,7 +339,7 @@ sub _MemorySwapCheck {
 
     # If used OS is a linux system
     if ( $^O =~ /(linux|unix|netbsd|freebsd|darwin)/i ) {
-        if ( open( $MemInfoFile, '<', "/proc/meminfo" ) ) {
+        if ( open( $MemInfoFile, '<', "/proc/meminfo" ) ) {    ## no critic
             while (<$MemInfoFile>) {
                 my $TmpLine = $_;
                 if ( $TmpLine =~ /MemTotal/ ) {
@@ -439,7 +442,7 @@ sub _CPULoadCheck {
         # linux systems
         if ( -e "/proc/loadavg" ) {
             my $LoadFile;
-            open( $LoadFile, '<', "/proc/loadavg" );
+            open( $LoadFile, '<', "/proc/loadavg" );    ## no critic
             while (<$LoadFile>) {
                 @SplitArray = split( " ", $_ );
             }
@@ -448,7 +451,7 @@ sub _CPULoadCheck {
 
         # mac os
         elsif ( $^O =~ /darwin/i ) {
-            if ( open( my $In, "sysctl vm.loadavg |" ) ) {
+            if ( open( my $In, "-|", "sysctl vm.loadavg" ) ) {    ## no critic
                 while (<$In>) {
                     if ( my ($Loads) = $_ =~ /vm\.loadavg: \s* \{ \s*  (.*) \s* \}/smx ) {
                         @SplitArray = split ' ', $Loads;
@@ -517,7 +520,7 @@ sub _DiskUsageCheck {
             $Commandline = "df -l";
         }
         my $In;
-        if ( open( $In, "$Commandline |" ) ) {
+        if ( open( $In, "-|", "$Commandline" ) ) {    ## no critic
             while (<$In>) {
                 if ( $_ =~ /^(.+?)\s.*\s(\d\d\d|\d\d|\d)%.+?$/ ) {
                     if ( $2 > 90 ) {

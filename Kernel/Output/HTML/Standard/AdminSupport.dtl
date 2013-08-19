@@ -1,8 +1,6 @@
 # --
 # AdminSupport.dtl - provides HTML form for AdminSupport
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminSupport.dtl,v 1.35 2013-04-16 13:03:20 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

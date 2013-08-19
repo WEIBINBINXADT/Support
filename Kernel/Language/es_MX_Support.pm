@@ -1,8 +1,6 @@
 # --
 # Kernel/Language/es_MX_Support.pm - translation file
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: es_MX_Support.pm,v 1.6 2013-05-01 10:24:39 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

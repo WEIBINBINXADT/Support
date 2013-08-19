@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Support/Webserver/IIS.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: IIS.pm,v 1.11 2013-02-04 07:08:41 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,7 +13,6 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.11 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;

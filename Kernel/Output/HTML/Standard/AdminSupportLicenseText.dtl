@@ -1,8 +1,6 @@
 # --
 # AdminSupportLicenseText.dtl - provides the license definition for the Support
-# Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminSupportLicenseText.dtl,v 1.2 2010-09-10 07:44:42 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
