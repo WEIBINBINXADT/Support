@@ -8,6 +8,7 @@
 # --
 
 package Kernel::System::Support::Database::db2;
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 
 use strict;
 use warnings;

@@ -8,6 +8,7 @@
 # --
 
 package Kernel::System::Support::Database::mssql;
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 
 use strict;
 use warnings;

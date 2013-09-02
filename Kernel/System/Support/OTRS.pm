@@ -8,6 +8,7 @@
 # --
 
 package Kernel::System::Support::OTRS;
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 
 use strict;
 use warnings;
