@@ -411,7 +411,7 @@ sub Run {
                         %TableValues = %{ $RowHash->{TableInfo} };
                     }
                     else {
-                        %TableValues = split /[=;]/, $RowHash->{TableInfo};
+                        %TableValues = split /[=;\n]/, $RowHash->{TableInfo};
                     }
 
                     for my $Item ( sort keys %TableValues ) {
