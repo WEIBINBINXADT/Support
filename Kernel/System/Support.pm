@@ -230,7 +230,7 @@ sub XMLStringCreate {
     my $CountModule = 0;
     my $CountItem   = 0;
     MODULE:
-    for my $Module ( keys %{ $Param{DataHash} } ) {
+    for my $Module ( sort keys %{ $Param{DataHash} } ) {
 
         $CountModule++;
         $XMLHash->[1]->{SupportInfo}->[1]->{Module}->[$CountModule]->{Name} = $Module;
@@ -241,7 +241,7 @@ sub XMLStringCreate {
             my $Data = {};
 
             ELEMENT:
-            for my $Element ( keys %{$DataHashRow} ) {
+            for my $Element ( sort keys %{$DataHashRow} ) {
 
                 next ELEMENT if $Element eq 'Name';
                 $Data->{$Element}->[1]->{Content} = $DataHashRow->{$Element};
@@ -668,7 +668,7 @@ sub GetInstalledProduct {
         . $Self->{ConfigObject}->Get('Version');
 
     for my $Package ( $Self->{PackageObject}->RepositoryList() ) {
-        for my $Tools ( keys %Tool ) {
+        for my $Tools ( sort keys %Tool ) {
             if ( $Tools =~ /^\Q$Package->{Name}->{Content}\E$/ ) {
                 if ( $Tool{$Tools} == 0 ) {
                     $Product .= " / $Package->{Name}->{Content}";
@@ -847,7 +847,7 @@ sub Download {
 
     # create mail body
     my $Body = '';
-    for my $Key ( keys %Param ) {
+    for my $Key ( sort keys %Param ) {
         $Body .= "$Key:$Param{$Key}\n";
     }
     $Body .= "FQDN:" . $Self->{ConfigObject}->Get('FQDN') . "\n";

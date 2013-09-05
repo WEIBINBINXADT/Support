@@ -10,6 +10,7 @@
 package Kernel::Language::es_MX_Support;
 
 use strict;
+use warnings;
 
 sub Data {
     my $Self = shift;

@@ -178,7 +178,7 @@ sub _ApacheDBICheck {
     my $Check     = '';
     my $Message   = '';
     if ( $ENV{MOD_PERL} ) {
-        for my $Module ( keys %INC ) {
+        for my $Module ( sort keys %INC ) {
             $Module =~ s/\//::/g;
             $Module =~ s/\.pm$//g;
             if ( $Module eq 'Apache::DBI' || $Module eq 'Apache2::DBI' ) {
@@ -226,7 +226,7 @@ sub _ApacheReloadCheck {
 
                 # check if Apache::Reload is loaded
                 my $ApacheReload = 0;
-                for my $Module ( keys %INC ) {
+                for my $Module ( sort keys %INC ) {
                     $Module =~ s/\//::/g;
                     $Module =~ s/\.pm$//g;
                     if ( $Module eq 'Apache::Reload' || $Module eq 'Apache2::Reload' ) {
