@@ -69,7 +69,7 @@ sub Data {
     # mysql
     $Self->{Translation}->{'No MySQL version found.'} = '';
     $Self->{Translation}->{'MySQL version'} = '';
-    $Self->{Translation}->{'you should use 4.1 or higher.'} = '';
+    $Self->{Translation}->{'you should use 5.0 or higher.'} = '';
     $Self->{Translation}->{'Unknown MySQL version'} = '';
     $Self->{Translation}->{'Database Version.'} = '';
     $Self->{Translation}->{'Check database version.'} = '';

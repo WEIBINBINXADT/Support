@@ -13,8 +13,8 @@ package Kernel::System::Support::Database::mysql;
 use strict;
 use warnings;
 
-use Kernel::System::XML;
 use Kernel::System::Time;
+use Kernel::System::XML;
 
 use vars qw(@ISA $VERSION);
 
@@ -79,31 +79,26 @@ sub _VersionCheck {
     # version check
     my $Check   = 'Failed';
     my $Message = $Self->{LanguageObject}->Get('No MySQL version found.');
-    $Self->{DBObject}->Prepare( SQL => 'show variables' );
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
 
-        # if row not version row, next.
-        if ( $Row[0] !~ /^version$/i ) {
-            next;
-        }
+    my $Version = $Self->{DBObject}->Version();
 
-        if ( $Row[1] =~ /^(\d{1,3})\.(\d{1,3}).*$/ ) {
-            if ( $1 >= 4 ) {
-                $Check   = 'OK';
-                $Message = "MySQL $Row[1]";
-            }
-            else {
-                $Check   = 'Failed';
-                $Message = $Self->{LanguageObject}->Get('MySQL version') .
-                    " $Row[1], " .
-                    $Self->{LanguageObject}->Get('you should use 4.1 or higher.');
-            }
+    if ( $Version =~ /^MySQL (\d{1,3})\.(\d{1,3}).*/ ) {
+        if ( $1 >= 5 ) {
+            $Check   = 'OK';
+            $Message = $Version;
         }
         else {
-            $Check   = 'Critical';
-            $Message = $Self->{LanguageObject}->Get('Unknown MySQL version') . " $Row[1].";
+            $Check   = 'Failed';
+            $Message = $Self->{LanguageObject}->Get('MySQL version') .
+                " $Version, " .
+                $Self->{LanguageObject}->Get('you should use 5.0 or higher.');
         }
     }
+    else {
+        $Check   = 'Critical';
+        $Message = $Self->{LanguageObject}->Get('Unknown MySQL version') . " '$Version'.";
+    }
+
     my $Data = {
         Name        => $Self->{LanguageObject}->Get('Database Version.'),
         Description => $Self->{LanguageObject}->Get('Check database version.'),

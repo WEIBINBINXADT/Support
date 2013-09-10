@@ -69,7 +69,7 @@ sub Data {
     # mysql
     $Self->{Translation}->{'No MySQL version found.'} = 'No fue encontrada ninguna versión de MySQL';
     $Self->{Translation}->{'MySQL version'} = 'Versión de MySQL';
-    $Self->{Translation}->{'you should use 4.1 or higher.'} = 'debería de usar la versión 4.1 o superior.';
+    $Self->{Translation}->{'you should use 5.0 or higher.'} = 'debería de usar la versión 5.0 o superior.';
     $Self->{Translation}->{'Unknown MySQL version'} = 'Versión de base de datos MySQL desconocida';
     $Self->{Translation}->{'Database Version.'} = 'Versión de base de datos';
     $Self->{Translation}->{'Check database version.'} = 'Verifica la versión de base de datos';
