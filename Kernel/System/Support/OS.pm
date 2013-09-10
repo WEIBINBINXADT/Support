@@ -194,59 +194,47 @@ sub _PerlModulesCheck {
     my $Home       = $Self->{ConfigObject}->Get('Home');
     my $TmpSumString;
 
+    my $Output;
     ## no critic
-    if ( open( $TmpSumString, "-|", "perl $Home/bin/otrs.CheckModules.pl nocolors" ) ) {
-        ## use critic
+    open( my $FH, "-|", "perl $Home/bin/otrs.CheckModules.pl nocolors --all" );
+    ## use critic
 
-        my $TmpLog;
-        ## no critic
-        open( $TmpSumString, "-|", "perl $Home/bin/otrs.CheckModules.pl nocolors" );
-        ## use critic
+    while (<$FH>) {
+        $Output .= $_;
+    }
+    close($FH);
 
-        while (<$TmpSumString>) {
-            $TmpLog .= $_;
-        }
-        close($TmpSumString);
+    if (
+        $Output =~ m{Not \s installed! \s \(Required}smx
+        || $Output =~ m{failed!}smx
+        )
+    {
+        $ReturnHash = {
+            Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
+            Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
+            Comment =>
+                $Self->{LanguageObject}->Get(
+                'There is an error in your installed perl modules configuration. Please contact your administrator.'
+                )
+            ,
+            Check         => 'Failed',
+            BlockStyle    => 'TextArea',
+            ContentString => $Output,
+        };
 
-        if (
-            $TmpLog =~ m{Not \s installed! \s \(Required}smx
-            || $TmpLog =~ m{failed!}smx
-            )
-        {
-            $ReturnHash = {
-                Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
-                Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
-                Comment =>
-                    $Self->{LanguageObject}->Get(
-                    'There is an error in your installed perl modules configuration. Please contact your administrator.'
-                    )
-                ,
-                Check         => 'Failed',
-                BlockStyle    => 'TextArea',
-                ContentString => $TmpLog,
-            };
-
-        }
-        else {
-            $ReturnHash = {
-                Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
-                Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
-                Comment     => $Self->{LanguageObject}
-                    ->Get('All Perl modules needed are currently installed.'),
-                Check         => 'OK',
-                BlockStyle    => 'TextArea',
-                ContentString => $TmpLog,
-            };
-        }
     }
     else {
         $ReturnHash = {
             Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
             Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
-            Comment     => $Self->{LanguageObject}->Get('Unable to check Perl modules.'),
-            Check       => 'Critical',
+            Comment     => $Self->{LanguageObject}
+                ->Get('All Perl modules needed are currently installed.'),
+            Check         => 'OK',
+            BlockStyle    => 'TextArea',
+            ContentString => $Output,
         };
     }
+
     return $ReturnHash;
 }
 
