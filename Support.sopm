@@ -36,7 +36,6 @@
         <File Permission="644" Location="Kernel/cpan-lib/Archive/Tar/Constant.pm"/>
         <File Permission="644" Location="Kernel/cpan-lib/Archive/Tar/File.pm"/>
         <File Permission="644" Location="Kernel/cpan-lib/Archive/Tar.pm"/>
-        <File Permission="644" Location="Kernel/cpan-lib/Linux/Distribution.pm"/>
         <File Permission="644" Location="var/httpd/htdocs/skins/Agent/default/css/Support.Default.css"/>
     </Filelist>
     <DatabaseInstall>

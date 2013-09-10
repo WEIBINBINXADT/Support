@@ -13,7 +13,7 @@ package Kernel::System::Support::OS;
 use strict;
 use warnings;
 
-use vars qw(@ISA $VERSION);
+use Kernel::System::Environment;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -23,12 +23,13 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for my $Object (qw(MainObject ConfigObject LogObject LayoutObject)) {
+    for my $Object (qw(MainObject ConfigObject LogObject EncodeObject DBObject LayoutObject)) {
         $Self->{$Object} = $Param{$Object} || die "Got no $Object!";
     }
 
     # create additional objects
-    $Self->{LanguageObject} = $Self->{LayoutObject}->{LanguageObject};
+    $Self->{LanguageObject}    = $Self->{LayoutObject}->{LanguageObject};
+    $Self->{EnvironmentObject} = Kernel::System::Environment->new( %{$Self} );
 
     return $Self;
 }
@@ -71,97 +72,18 @@ sub AdminChecksGet {
 sub _DistributionCheck {
     my ( $Self, %Param ) = @_;
 
-    my $ReturnHash = {};
+    my %OSInfo = $Self->{EnvironmentObject}->OSInfoGet();
 
-    # If used OS is a linux system
-    if ( $^O =~ /(linux|unix|netbsd|darwin)/i ) {
-        my $TmpLine = "";
-        my $Distribution;
-        if ( $^O =~ /darwin/i && open( $Distribution, "-|", "sw_vers" ) ) {    ## no critic
-            while (<$Distribution>) {
-                $TmpLine .= $_;
-            }
-            $TmpLine =~ s/\\.*//;
-            $TmpLine =~ s/\n/ /g;
-            $ReturnHash = {
-                Name        => $Self->{LanguageObject}->Get('Distribution'),
-                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-                Comment     => "\"$TmpLine\" " . $Self->{LanguageObject}->Get('is used.'),
-                Check       => 'OK',
-            };
+    # if OSname starts with Unknown, test was not successful
+    my $Result = $OSInfo{OSName} =~ /\A Unknown /xms ? 'Failed' : 'OK';
 
-        }
-        elsif ( $^O =~ /linux/i ) {
-            my $Message = $Self->{LanguageObject}->Get('Distribution unknown.');
-            $Self->{MainObject}->Require('Linux::Distribution');
-            my $DistributionName = Linux::Distribution::distribution_name();
-            if ($DistributionName) {
-                my $DistributionVersion = Linux::Distribution::distribution_version() || '';
-                $Message
-                    = $DistributionName . ' '
-                    . $DistributionVersion . ' '
-                    . $Self->{LanguageObject}->Get('is used.');
-            }
-            $ReturnHash = {
-                Name        => $Self->{LanguageObject}->Get('Distribution'),
-                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-                Comment     => $Message,
-                Check       => 'OK',
-            };
-        }
-        ## no critic
-        elsif ( open( $Distribution, '<', "/etc/issue" ) ) {
-            ## use critic
-            while (<$Distribution>) {
-                $TmpLine .= $_;
-            }
-            close($Distribution);
-            if ($TmpLine) {
-                $TmpLine =~ s/\\.*//;
-                $TmpLine =~ s/\n//g;
-                $ReturnHash = {
-                    Name        => $Self->{LanguageObject}->Get('Distribution'),
-                    Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-                    Comment     => "\"$TmpLine\" " . $Self->{LanguageObject}->Get('is used.'),
-                    Check       => 'OK',
-                };
-            }
-        }
-        else {
-            $ReturnHash = {
-                Name        => $Self->{LanguageObject}->Get('Distribution'),
-                Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-                Comment     => $Self->{LanguageObject}->Get('Can\'t determine distribution.'),
-                Check       => 'Failed',
-            };
-        }
-    }
-    elsif ( $^O =~ /win32/i ) {
-        $Self->{MainObject}->Require('Win32');
-        my @WinVersion;
-        no strict 'refs';    ## no critic
-        if ( defined &Win32::GetOSDisplayName ) {
-            @WinVersion = Win32::GetOSDisplayName();
-        }
-        else {
-            @WinVersion = Win32::GetOSName();
-        }
-        use strict;
-        $ReturnHash = {
-            Name        => $Self->{LanguageObject}->Get('Distribution'),
-            Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-            Comment     => "@WinVersion " . $Self->{LanguageObject}->Get('is used.'),
-            Check       => 'OK',
-        };
-    }
-    elsif ( $^O =~ /freebsd/i ) {
-        $ReturnHash = {
-            Name        => $Self->{LanguageObject}->Get('Distribution'),
-            Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
-            Comment     => "$^O " . $Self->{LanguageObject}->Get('is used.'),
-            Check       => 'OK',
-        };
-    }
+    my $ReturnHash = {
+        Name        => $Self->{LanguageObject}->Get('Distribution'),
+        Description => $Self->{LanguageObject}->Get('Shows the used distribution.'),
+        Comment     => $OSInfo{OSName},
+        Check       => 'OK',
+    };
+
     return $ReturnHash;
 }
 
