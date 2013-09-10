@@ -61,7 +61,6 @@
             <Hash>
                 <Item Key="MaxAllowedPackageCheck">1</Item>
                 <Item Key="QueryCacheSizeCheck">1</Item>
-                <Item Key="UTF8SupportCheck">1</Item>
                 <Item Key="UTF8ClientCheck">1</Item>
                 <Item Key="UTF8DatabaseCheck">1</Item>
                 <Item Key="UTF8TableCheck">1</Item>

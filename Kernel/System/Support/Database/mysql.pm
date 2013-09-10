@@ -113,46 +113,6 @@ sub _VersionCheck {
     return $Data;
 }
 
-sub _UTF8SupportCheck {
-    my ( $Self, %Param ) = @_;
-
-    # utf-8 support check
-    if ( $Self->{ConfigObject}->Get('DefaultCharset') !~ /utf(\-8|8)/i ) {
-        return;
-    }
-
-    my $Data = {
-        Name        => $Self->{LanguageObject}->Get('Database (utf8)'),
-        Description => $Self->{LanguageObject}->Get('Check database utf8 support.'),
-        Comment     => $Self->{LanguageObject}->Get('No database version found.'),
-        Check       => 'Critical',
-    };
-
-    # ask the database
-    $Self->{DBObject}->Prepare( SQL => 'show variables' );
-
-    # fetch the result
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
-
-        # next row if not version
-        next if $Row[0] !~ /^version$/i;
-
-        # find the version number
-        if ( $Row[1] =~ /^(4\.(1|2|3|4|5)|5\.|6\.|7\.)/ ) {
-            $Data->{Comment} = $Self->{LanguageObject}->Get('Your database version supports utf8.');
-            $Data->{Check}   = 'OK';
-
-            next;
-        }
-
-        $Data->{Comment}
-            = $Self->{LanguageObject}->Get('utf8 is not supported') . "(MySQL $Row[1]).";
-        $Data->{Check} = 'Failed';
-    }
-
-    return $Data;
-}
-
 sub _UTF8ClientCheck {
     my ( $Self, %Param ) = @_;
     my $Data = {};
