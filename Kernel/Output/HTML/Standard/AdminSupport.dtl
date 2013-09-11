@@ -50,7 +50,7 @@
         <div class="WidgetSimple">
             <div class="Header">
                 <div class="WidgetAction Toggle">
-                    <a title="Toggle this widget" href="#"></a>
+                    <a href="#" title="$Text{"Show or hide the content"}"><i class="icon-caret-right"></i><i class="icon-caret-down"></i></a>
                 </div>
                 <h2>$Text{"$Data{"Module"}"}</h2>
             </div>
