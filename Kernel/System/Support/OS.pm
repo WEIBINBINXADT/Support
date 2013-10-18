@@ -423,7 +423,7 @@ sub _DiskUsageCheck {
 
     # If used OS is a linux system
     if ( $^O =~ /(linux|unix|netbsd|freebsd|darwin)/i ) {
-        my $Commandline = "df -lx tmpfs -x iso9660 -x udf";
+        my $Commandline = "df -lx tmpfs -x iso9660 -x udf -x squashfs";
 
         # current MacOS and FreeBSD does not support the -x flag for df
         if ( $^O =~ /(darwin|freebsd)/i ) {
