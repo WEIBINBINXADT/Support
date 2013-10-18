@@ -54,7 +54,6 @@ sub Data {
     $Self->{Translation}->{'Definition of the Cron checks.'} = 'Definición de las verificaciones para Cron';
     $Self->{Translation}->{'Definition of the OTRS checks.'} = 'Definición de las verificaciones para OTRS';
     $Self->{Translation}->{'Definition of the Operating System checks.'} = 'Definición de las verificaciones para el Sistema Operativo';
-    $Self->{Translation}->{'Definition of the database checks for the DB2 database.'} = 'Definición de las verificaciones para la base de datos DB2';
     $Self->{Translation}->{'Definition of the database checks for the MSSQL database.'} = 'Definición de las verificaciones para la base de datos MSSQL';
     $Self->{Translation}->{'Definition of the database checks for the MySQL database.'} = 'Definición de las verificaciones para la base de datos MySQL';
     $Self->{Translation}->{'Definition of the database checks for the Oracle database.'} = 'Definición de las verificaciones para la base de datos Oracle';
@@ -64,9 +63,9 @@ sub Data {
     $Self->{Translation}->{'Frontend module registration for the AdminSystemStatus object in the admin area.'} = 'Registro en el sistema del modulo de soporte.';
 
     # Database
-    $Self->{Translation}->{'Database'} = 'Base de datos';
 
     # mysql
+    $Self->{Translation}->{'Database'} = 'Base de datos';
     $Self->{Translation}->{'No MySQL version found.'} = 'No fue encontrada ninguna versión de MySQL';
     $Self->{Translation}->{'MySQL version'} = 'Versión de MySQL';
     $Self->{Translation}->{'you should use 5.0 or higher.'} = 'debería de usar la versión 5.0 o superior.';
@@ -170,9 +169,6 @@ sub Data {
     $Self->{Translation}->{'Check database hostname.'} = 'Verifica el nombre del anfitrión para la base de datos';
     $Self->{Translation}->{"Table doesn't exist"} = 'No existe la tabla';
     $Self->{Translation}->{'tables'} = 'tablas';
-
-    # db2
-    $Self->{Translation}->{"Can't find file"} = 'No ha sido posible encontrar el archivo';
 
     # Oracle
     $Self->{Translation}->{'No ORACLE_HOME setting found.'} = 'La configuración ORACLE_HOME no fue encontrada';

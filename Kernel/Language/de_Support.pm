@@ -54,7 +54,6 @@ sub Data {
     $Self->{Translation}->{'Definition of the Cron checks.'} = 'Definition der Cron-Checks.';
     $Self->{Translation}->{'Definition of the OTRS checks.'} = 'Definition der OTRS-Checks.';
     $Self->{Translation}->{'Definition of the Operating System checks.'} = 'Definition der Betriebssystem-Checks.';
-    $Self->{Translation}->{'Definition of the database checks for the DB2 database.'} = 'Definition der Datenbank-Checks für die DB2 Datenbank.';
     $Self->{Translation}->{'Definition of the database checks for the MSSQL database.'} = 'Definition der Datenbank-Checks für die MSSQL Datenbank.';
     $Self->{Translation}->{'Definition of the database checks for the MySQL database.'} = 'Definition der Datenbank-Checks für die MySQL Datenbank.';
     $Self->{Translation}->{'Definition of the database checks for the Oracle database.'} = 'Definition der Datenbank-Checks für die Oracle Datenbank.';
@@ -170,9 +169,6 @@ sub Data {
     $Self->{Translation}->{'Check database hostname.'} = '';
     $Self->{Translation}->{"Table doesn't exist"} = '';
     $Self->{Translation}->{'tables'} = '';
-
-    # db2
-    $Self->{Translation}->{"Can't find file"} = '';
 
     # Oracle
     $Self->{Translation}->{'No ORACLE_HOME setting found.'} = '';
