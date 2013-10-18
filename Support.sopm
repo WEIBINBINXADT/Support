@@ -12,9 +12,6 @@
     <Description Lang="en">Verifies System settings and gives performance tips.</Description>
     <Description Lang="de">Das Support-Assessment-Modul prüft fehlerhafte System-Einstellungen und gibt Performance-Tips.</Description>
     <Description Lang="es">Comprueba configuraciones del sistema y brinda consejos de rendimiento.</Description>
-    <IntroInstallPost Title="Notice - Introduction" Lang="en">The Support assessment module provides system checks and can help to find setup errors. After installation it can be accessed from the Administration Interface, in the System Administration panel.</IntroInstallPost>
-    <IntroInstallPost Title="Hinweis - Einführung" Lang="de">Das Support-Assessment-Modul bietet Systemüberprüfungen an, mit denen Einrichtungsfehler erkannt werden können. Nach der Installation kann es über den Administrationsbereich im Abschnitt System-Administration aufgerufen werden.</IntroInstallPost>
-    <IntroInstallPost Title="Notice - Introduction" Lang="es">El módulo de evaluación de soporte proporciona comprobaciones del sistema y puede ayudar a encontrar errores de configuración. Después de la instalación se puede acceder desde la Interfaz de Administración, en el panel de administración del sistema.</IntroInstallPost>
     <Filelist>
         <File Permission="644" Location="Kernel/Config/Files/Support.xml"/>
         <File Permission="644" Location="Kernel/Language/de_Support.pm"/>
@@ -38,6 +35,9 @@
         <File Permission="644" Location="Kernel/cpan-lib/Archive/Tar.pm"/>
         <File Permission="644" Location="var/httpd/htdocs/skins/Agent/default/css/Support.Default.css"/>
     </Filelist>
+    <IntroInstall Type="post" Title="Notice - Introduction" Lang="en">The Support assessment module provides system checks and can help to find setup errors. After installation it can be accessed from the Administration Interface, in the System Administration panel.</IntroInstall>
+    <IntroInstall Type="post" Title="Hinweis - Einführung" Lang="de">Das Support-Assessment-Modul bietet Systemüberprüfungen an, mit denen Einrichtungsfehler erkannt werden können. Nach der Installation kann es über den Administrationsbereich im Abschnitt System-Administration aufgerufen werden.</IntroInstall>
+    <IntroInstall Type="post" Title="Notice - Introduction" Lang="es">El módulo de evaluación de soporte proporciona comprobaciones del sistema y puede ayudar a encontrar errores de configuración. Después de la instalación se puede acceder desde la Interfaz de Administración, en el panel de administración del sistema.</IntroInstall>
     <DatabaseInstall>
         <TableCreate Name="support_bench_test">
             <Column Name="name_a" Required="true" Size="60" Type="VARCHAR"/>
