@@ -104,6 +104,7 @@ sub _ApacheModDeflateCheck {
         }
     }
     else {
+
         # just skip if not running mod_perl2
         return;
     }
@@ -130,6 +131,7 @@ sub _ApacheModHeadersCheck {
         }
     }
     else {
+
         # just skip if not running mod_perl2
         return;
     }
