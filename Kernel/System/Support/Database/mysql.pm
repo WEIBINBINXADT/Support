@@ -82,8 +82,8 @@ sub _VersionCheck {
 
     my $Version = $Self->{DBObject}->Version();
 
-    if ( $Version =~ /^MySQL (\d{1,3})\.(\d{1,3}).*/ ) {
-        if ( $1 >= 5 ) {
+    if ( $Version =~ /^(MySQL|MariaDB) (\d{1,3})\.(\d{1,3}).*/ ) {
+        if ( $2 >= 5 ) {
             $Check   = 'OK';
             $Message = $Version;
         }

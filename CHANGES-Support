@@ -8,6 +8,7 @@
 # --
 
 1.5.4 2013-??-??
+ - 2013-10-30 Version check no longer fails when ran on MariaDB 10.
  - 2013-10-18 Fixed bug#9836 - OTRS Appliance reports disk full on /dev/loop0.
  - 2013-10-16 Fixed bug#9368 - FreeBSD df not support -x.
 
