@@ -349,12 +349,12 @@ sub Data {
     $Self->{Translation}->{'You have not enabled SOAP or have set your own password.'} = '';
     $Self->{Translation}->{'Please set a strong password for SOAP::Password in SysConfig.'} = '';
 
-    $Self->{Translation}->{'Product'} = '';
-    $Self->{Translation}->{'Tickets'} = '';
-    $Self->{Translation}->{'Articles'} = '';
-    $Self->{Translation}->{'Agents'} = '';
-    $Self->{Translation}->{'Roles'} = '';
-    $Self->{Translation}->{'Groups'} = '';
+    $Self->{Translation}->{'Product'} = 'Produkt';
+    $Self->{Translation}->{'Tickets'} = 'Tickets';
+    $Self->{Translation}->{'Articles'} = 'Artikel';
+    $Self->{Translation}->{'Agents'} = 'Agenten';
+    $Self->{Translation}->{'Roles'} = 'Rollen';
+    $Self->{Translation}->{'Groups'} = 'Gruppen';
     $Self->{Translation}->{'Articles per ticket (avg)'} = '';
     $Self->{Translation}->{'Operating system'} = '';
     $Self->{Translation}->{'Months between first and last ticket'} = '';
