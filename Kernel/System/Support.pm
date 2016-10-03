@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -9,6 +9,7 @@
 
 package Kernel::System::Support;
 ## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
+## nofilter(TidyAll::Plugin::OTRS::Common::ProhibitEmailAddresses)
 
 use strict;
 use warnings;
@@ -247,8 +248,7 @@ sub XMLStringCreate {
                 $Data->{$Element}->[1]->{Content} = $DataHashRow->{$Element};
             }
 
-            $XMLHash->[1]->{SupportInfo}->[1]->{Module}->[$CountModule]->{Item}->[$CountItem]
-                = $Data;
+            $XMLHash->[1]->{SupportInfo}->[1]->{Module}->[$CountModule]->{Item}->[$CountItem] = $Data;
 
             $XMLHash->[1]->{SupportInfo}->[1]->{Module}->[$CountModule]->{Item}->[$CountItem]
                 ->{Name} = $DataHashRow->{Name};
@@ -361,7 +361,10 @@ sub ARCHIVELogCreate {
     }
 
     # log info
-    $Self->{LogObject}->Log( Priority => 'notice', Message => 'ARCHIVELogCreate end' );
+    $Self->{LogObject}->Log(
+        Priority => 'notice',
+        Message  => 'ARCHIVELogCreate end'
+    );
 
     return ( \$ARCHIVEString, 'ARCHIVE.log' );
 }
@@ -439,7 +442,10 @@ sub OpmInfo {
     my ( $Self, %Param ) = @_;
 
     # log info
-    $Self->{LogObject}->Log( Priority => 'notice', Message => 'OpmInfo start' );
+    $Self->{LogObject}->Log(
+        Priority => 'notice',
+        Message  => 'OpmInfo start'
+    );
 
     my $OpmInfo;
     for my $Package ( $Self->{PackageObject}->RepositoryList() ) {
@@ -454,7 +460,10 @@ sub OpmInfo {
     $OpmInfo .= "+----------------------------------------------------------------------------+\n";
 
     # log info
-    $Self->{LogObject}->Log( Priority => 'notice', Message => 'OpmInfo end' );
+    $Self->{LogObject}->Log(
+        Priority => 'notice',
+        Message  => 'OpmInfo end'
+    );
 
     return ( \$OpmInfo, 'InstalledPackages.log' );
 }
@@ -463,7 +472,10 @@ sub ApplicationArchiveCreate {
     my ( $Self, %Param ) = @_;
 
     # log info
-    $Self->{LogObject}->Log( Priority => 'notice', Message => 'ApplicationArchiveCreate start' );
+    $Self->{LogObject}->Log(
+        Priority => 'notice',
+        Message  => 'ApplicationArchiveCreate start'
+    );
 
     my $Home    = $Self->{ConfigObject}->Get('Home');
     my $Archive = $Self->{ConfigObject}->Get('Home') . '/var/tmp/application.tar';
@@ -562,7 +574,10 @@ sub DirectoryFiles {
     # check needed stuff
     for (qw(Directory)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -612,7 +627,11 @@ sub DirectoryFiles {
             next FILE if $File =~ /css-cache/;
 
             # add directory to list
-            push @Files, $Self->DirectoryFiles( Directory => $File, Loop => 1 );
+            push @Files,
+                $Self->DirectoryFiles(
+                Directory => $File,
+                Loop      => 1
+                );
         }
         else {
 
@@ -827,7 +846,9 @@ sub Download {
         Flatten => 1,
     );
 
-    $File{CheckContent} = $Self->XMLStringCreate( DataHash => $DataHash, );
+    $File{CheckContent} = $Self->XMLStringCreate(
+        DataHash => $DataHash,
+    );
     $File{CheckFilename} = 'check.xml';
 
     # create application package
@@ -1021,7 +1042,7 @@ sub _SQLInsert {
 
             # insert data
             $Self->{"DBObject$Mode"}->Do(
-                SQL => 'INSERT INTO support_bench_test (name_a, name_b) values (?, ?)',
+                SQL  => 'INSERT INTO support_bench_test (name_a, name_b) values (?, ?)',
                 Bind => [ \$Value1, \$Value2, ],
             );
         }
@@ -1042,7 +1063,7 @@ sub _SQLUpdate {
 
             # update data
             $Self->{"DBObject$Mode"}->Do(
-                SQL => 'UPDATE support_bench_test SET name_a = ?, name_b = ? WHERE name_a = ?',
+                SQL  => 'UPDATE support_bench_test SET name_a = ?, name_b = ? WHERE name_a = ?',
                 Bind => [ \$Value1, \$Value2, \$ValueOld ],
             );
         }
