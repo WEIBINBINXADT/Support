@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/Database/oracle.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -111,10 +111,8 @@ sub _NLSLangCheck {
     if ( $ENV{NLS_LANG} ) {
         if ( $Self->{ConfigObject}->Get('DefaultCharset') =~ /utf(\-8|8)/i ) {
             if ( $ENV{NLS_LANG} !~ /utf(\-8|8)/i ) {
-                $Message
-                    = "$ENV{NLS_LANG}, "
-                    . $Self->{LanguageObject}
-                    ->Get('need .utf8 in NLS_LANG (e. g. german_germany.utf8).');
+                $Message = "$ENV{NLS_LANG}, "
+                    . $Self->{LanguageObject}->Get('need .utf8 in NLS_LANG (e. g. german_germany.utf8).');
                 $Check = 'Failed';
             }
             else {
@@ -146,9 +144,7 @@ sub _NLSDateFormatCheck {
     my $Message = $Self->{LanguageObject}->Get('No NLS_DATE_FORMAT setting found.');
     if ( $ENV{NLS_DATE_FORMAT} ) {
         if ( $ENV{NLS_DATE_FORMAT} ne "YYYY-MM-DD HH24:MI:SS" ) {
-            $Message
-                = $Self->{LanguageObject}
-                ->Get("Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not")
+            $Message = $Self->{LanguageObject}->Get("Need format 'YYYY-MM-DD HH24:MI:SS' for NLS_DATE_FORMAT (not")
                 . " $ENV{NLS_DATE_FORMAT}).";
             $Check = 'Failed';
         }
@@ -175,17 +171,18 @@ sub _NLSDateFormatSelectCheck {
     my $Message = $Self->{LanguageObject}->Get('NLS_DATE_FORMAT seems to be wrong');
     my $CreateTime;
 
-    $Self->{DBObject}->Prepare( SQL => "SELECT create_time FROM valid", Limit => 1 );
+    $Self->{DBObject}->Prepare(
+        SQL   => "SELECT create_time FROM valid",
+        Limit => 1
+    );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         $CreateTime = $Row[0];
     }
 
     if ($CreateTime) {
         if ( $CreateTime !~ /^\d\d\d\d-(\d|\d\d)-(\d|\d\d)\s(\d|\d\d):(\d|\d\d):(\d|\d\d)/ ) {
-            $Message
-                = "$CreateTime "
-                . $Self->{LanguageObject}
-                ->Get("is not the right format 'yyyy-mm-dd hh:mm::ss' (please check")
+            $Message = "$CreateTime "
+                . $Self->{LanguageObject}->Get("is not the right format 'yyyy-mm-dd hh:mm::ss' (please check")
                 . " \$ENV{NLS_DATE_FORMAT}).";
             $Check = 'Failed';
         }
@@ -299,16 +296,14 @@ sub _CurrentTimestampCheck {
     my $Range          = 10;
     $TimeDifference = $TimeApplicationServer - $TimeDatabaseServer;
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
-        $Check = 'OK';
-        $Message
-            = $Self->{LanguageObject}->Get(
+        $Check   = 'OK';
+        $Message = $Self->{LanguageObject}->Get(
             'There is no difference between application server time and database server time.'
-            );
+        );
     }
     else {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}->Get('There is a material difference (')
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
             . $Self->{LanguageObject}->Get(' seconds) between application server (')
             . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')

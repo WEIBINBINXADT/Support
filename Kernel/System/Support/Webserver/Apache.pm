@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/Webserver/Apache.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -110,10 +110,9 @@ sub _ApacheModDeflateCheck {
     }
     my $Data = {
         Name        => 'Mod_deflate',
-        Description => $Self->{LanguageObject}
-            ->Get('Check if the system uses mod_deflate.'),
-        Comment => $Message,
-        Check   => $Check,
+        Description => $Self->{LanguageObject}->Get('Check if the system uses mod_deflate.'),
+        Comment     => $Message,
+        Check       => $Check,
     };
     return $Data;
 }
@@ -137,10 +136,9 @@ sub _ApacheModHeadersCheck {
     }
     my $Data = {
         Name        => 'Mod_headers',
-        Description => $Self->{LanguageObject}
-            ->Get('Check if the system uses mod_headers.'),
-        Comment => $Message,
-        Check   => $Check,
+        Description => $Self->{LanguageObject}->Get('Check if the system uses mod_headers.'),
+        Comment     => $Message,
+        Check       => $Check,
     };
     return $Data;
 }
@@ -188,11 +186,10 @@ sub _ApacheDBICheck {
             }
         }
         if ( !$ApacheDBI ) {
-            $Check = 'Critical';
-            $Message
-                = $Self->{LanguageObject}->Get(
+            $Check   = 'Critical';
+            $Message = $Self->{LanguageObject}->Get(
                 'Apache::DBI should be used to get a better performance (pre-establish database connections).'
-                );
+            );
         }
         else {
             $Check   = 'OK';
@@ -236,11 +233,10 @@ sub _ApacheReloadCheck {
                     }
                 }
                 if ( !$ApacheReload ) {
-                    $Check = 'Info';
-                    $Message
-                        = $Self->{LanguageObject}->Get(
+                    $Check   = 'Info';
+                    $Message = $Self->{LanguageObject}->Get(
                         'Apache::Reload or Apache2::Reload should be used as PerlModule and PerlInitHandler to prevent web server restarts when installing and upgrading modules.'
-                        );
+                    );
                 }
                 else {
                     $Check   = 'OK';
@@ -256,10 +252,9 @@ sub _ApacheReloadCheck {
     }
     $Data = {
         Name        => 'Apache::Reload',
-        Description => $Self->{LanguageObject}
-            ->Get('Check if the system uses Apache::Reload/Apache2::Reload.'),
-        Comment => $Message,
-        Check   => $Check,
+        Description => $Self->{LanguageObject}->Get('Check if the system uses Apache::Reload/Apache2::Reload.'),
+        Comment     => $Message,
+        Check       => $Check,
     };
     return $Data;
 }
@@ -275,9 +270,8 @@ sub _CGIAcceleratorCheck {
 
         # check mod_perl version
         if ( $ENV{MOD_PERL} =~ /\/1.99/ ) {
-            $Check = 'Critical';
-            $Message
-                = $Self->{LanguageObject}->Get('You use a beta version of mod_perl')
+            $Check   = 'Critical';
+            $Message = $Self->{LanguageObject}->Get('You use a beta version of mod_perl')
                 . " ($ENV{MOD_PERL}), "
                 .
                 $Self->{LanguageObject}->Get('you should upgrade to a stable version.');
@@ -298,8 +292,7 @@ sub _CGIAcceleratorCheck {
     }
     else {
         $Check   = 'Critical';
-        $Message = $Self->{LanguageObject}
-            ->Get('You should use FastCGI or mod_perl to increase your performance.');
+        $Message = $Self->{LanguageObject}->Get('You should use FastCGI or mod_perl to increase your performance.');
     }
     $Data = {
         Name        => $Self->{LanguageObject}->Get('CGI Accelerator'),

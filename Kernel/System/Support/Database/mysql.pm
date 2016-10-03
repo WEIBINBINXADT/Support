@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/Database/mysql.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -160,14 +160,11 @@ sub _UTF8DatabaseCheck {
     $Self->{DBObject}->Prepare( SQL => 'show variables' );
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^character_set_database/i ) {
-            $Message
-                = $Self->{LanguageObject}
-                ->Get("Character_set_database setting found, but it's set to") .
+            $Message = $Self->{LanguageObject}->Get("Character_set_database setting found, but it's set to") .
                 " $Row[1] (" . $Self->{LanguageObject}->Get('needs to be utf8') . ').';
             if ( $Row[1] =~ /utf8/ ) {
-                $Check = 'OK';
-                $Message
-                    = $Self->{LanguageObject}->Get('Your database charset setting is') . " $Row[1]";
+                $Check   = 'OK';
+                $Message = $Self->{LanguageObject}->Get('Your database charset setting is') . " $Row[1]";
             }
         }
     }
@@ -268,17 +265,14 @@ sub _QueryCacheSizeCheck {
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] =~ /^query_cache_size/i ) {
             if ( !$Row[1] ) {
-                $Check = 'Critical';
-                $Message
-                    = $Self->{LanguageObject}
-                    ->Get('The setting "query_cache_size" should be used.');
+                $Check   = 'Critical';
+                $Message = $Self->{LanguageObject}->Get('The setting "query_cache_size" should be used.');
             }
             elsif ( $Row[1] < 1024 * 1024 * 10 ) {
                 $Row[1] = int( $Row[1] / 1024 / 1024 );
                 $Check = 'Critical';
                 $Message
-                    = $Self->{LanguageObject}
-                    ->Get("The setting 'query_cache_size' should be higher than 10 MB (it's")
+                    = $Self->{LanguageObject}->Get("The setting 'query_cache_size' should be higher than 10 MB (it's")
                     . " $Row[1] MB).";
             }
             else {
@@ -343,10 +337,9 @@ sub _TablesWithDifferentStorageEngineCheck {
 
     my $Data = {
         Name        => $Self->{LanguageObject}->Get('Tables with different storage engine'),
-        Description => $Self->{LanguageObject}
-            ->Get('Test if there are tables with a different storage engine.'),
-        Comment => $Comment,
-        Check   => $Check,
+        Description => $Self->{LanguageObject}->Get('Test if there are tables with a different storage engine.'),
+        Comment     => $Comment,
+        Check       => $Check,
     };
     return $Data;
 }
@@ -372,16 +365,14 @@ sub _CurrentTimestampCheck {
     my $Range          = 10;
     $TimeDifference = $TimeApplicationServer - $TimeDatabaseServer;
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
-        $Check = 'OK';
-        $Message
-            = $Self->{LanguageObject}->Get(
+        $Check   = 'OK';
+        $Message = $Self->{LanguageObject}->Get(
             'There is no difference between application server time and database server time.'
-            );
+        );
     }
     else {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}->Get('There is a material difference (')
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
             . $Self->{LanguageObject}->Get(' seconds) between application server (')
             . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')

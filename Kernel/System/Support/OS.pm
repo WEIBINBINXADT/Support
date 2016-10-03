@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/OS.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -159,8 +159,7 @@ sub _PerlCheck {
                 Description => $Self->{LanguageObject}->Get('Check Perl version.'),
                 Comment =>
                     $Self->{LanguageObject}->Get('Your Perl') . " $Version$Build ($OS)" .
-                    $Self->{LanguageObject}
-                    ->Get('is too old, you should upgrade to Perl 5.8.8 or higher.'),
+                    $Self->{LanguageObject}->Get('is too old, you should upgrade to Perl 5.8.8 or higher.'),
                 Check => 'Failed',
             };
 
@@ -169,8 +168,8 @@ sub _PerlCheck {
             $ReturnHash = {
                 Name        => $Self->{LanguageObject}->Get('PerlCheck'),
                 Description => $Self->{LanguageObject}->Get('Check Perl version.'),
-                Comment => "Perl $Version$Build ($OS) " . $Self->{LanguageObject}->Get('is used.'),
-                Check   => 'OK',
+                Comment     => "Perl $Version$Build ($OS) " . $Self->{LanguageObject}->Get('is used.'),
+                Check       => 'OK',
             };
         }
     }
@@ -225,10 +224,9 @@ sub _PerlModulesCheck {
     }
     else {
         $ReturnHash = {
-            Name        => $Self->{LanguageObject}->Get('PerlModulesCheck'),
-            Description => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
-            Comment     => $Self->{LanguageObject}
-                ->Get('All Perl modules needed are currently installed.'),
+            Name          => $Self->{LanguageObject}->Get('PerlModulesCheck'),
+            Description   => $Self->{LanguageObject}->Get('Check Perl Modules installed.'),
+            Comment       => $Self->{LanguageObject}->Get('All Perl modules needed are currently installed.'),
             Check         => 'OK',
             BlockStyle    => 'TextArea',
             ContentString => $Output,
@@ -273,8 +271,7 @@ sub _MemorySwapCheck {
             close($MemInfoFile);
 
             # build return hash
-            my $Description
-                = $Self->{LanguageObject}->Get('The Host System has') . ": \n"
+            my $Description = $Self->{LanguageObject}->Get('The Host System has') . ": \n"
                 . int( $MemTotal / 1024 ) . ' '
                 . $Self->{LanguageObject}->Get('MB Memory total') . " \n"
                 . int( $MemFree / 1024 ) . ' '
@@ -341,7 +338,10 @@ sub _CPULoadCheck {
     # check needed stuff
     for (qw()) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -375,8 +375,7 @@ sub _CPULoadCheck {
         if (@SplitArray) {
 
             # build return hash
-            my $Description
-                = $Self->{LanguageObject}->Get('The Host System has a load') . ": \n"
+            my $Description = $Self->{LanguageObject}->Get('The Host System has a load') . ": \n"
                 . $SplitArray[0] . ' '
                 . $Self->{LanguageObject}->Get('in the last 1 minute') . " \n"
                 . $SplitArray[1] . ' '

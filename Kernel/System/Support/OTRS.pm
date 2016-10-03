@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/OTRS.pm - all required otrs information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -134,9 +134,8 @@ sub _TicketIndexModuleCheck {
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] > 80000 ) {
             if ( $Module =~ /RuntimeDB/ ) {
-                $Check = 'Failed';
-                $Message
-                    = "$Row[0] "
+                $Check   = 'Failed';
+                $Message = "$Row[0] "
                     . $Self->{LanguageObject}->Get(
                     'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'
                     );
@@ -148,9 +147,8 @@ sub _TicketIndexModuleCheck {
         }
         elsif ( $Row[0] > 60000 ) {
             if ( $Module =~ /RuntimeDB/ ) {
-                $Check = 'Critical';
-                $Message
-                    = "$Row[0] "
+                $Check   = 'Critical';
+                $Message = "$Row[0] "
                     . $Self->{LanguageObject}->Get(
                     'tickets in your system. You should use the StaticDB backend. See admin manual (Performance Tuning) for more information.'
                     );
@@ -191,11 +189,9 @@ sub _TicketStaticDBOrphanedRecords {
         $Self->{DBObject}->Prepare( SQL => 'SELECT count(*) from ticket_lock_index' );
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             if ( $Row[0] ) {
-                $Check = 'Failed';
-                $Message
-                    = "$Row[0] "
-                    . $Self->{LanguageObject}
-                    ->Get('tickets in StaticDB lock_index but you are using the')
+                $Check   = 'Failed';
+                $Message = "$Row[0] "
+                    . $Self->{LanguageObject}->Get('tickets in StaticDB lock_index but you are using the')
                     . " $Module "
                     . $Self->{LanguageObject}->Get(
                     "index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
@@ -206,11 +202,9 @@ sub _TicketStaticDBOrphanedRecords {
         $Self->{DBObject}->Prepare( SQL => 'SELECT count(*) from ticket_index' );
         while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
             if ( $Row[0] ) {
-                $Check = 'Failed';
-                $Message
-                    = "$Row[0] "
-                    . $Self->{LanguageObject}
-                    ->Get('tickets in StaticDB index but you are using the')
+                $Check   = 'Failed';
+                $Message = "$Row[0] "
+                    . $Self->{LanguageObject}->Get('tickets in StaticDB index but you are using the')
                     . " $Module "
                     . $Self->{LanguageObject}->Get(
                     "index. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
@@ -219,8 +213,7 @@ sub _TicketStaticDBOrphanedRecords {
         }
     }
     else {
-        $Message
-            = $Self->{LanguageObject}->Get('You are using')
+        $Message = $Self->{LanguageObject}->Get('You are using')
             . " $Module. "
             . $Self->{LanguageObject}->Get('Skipping test.');
         $Check = 'OK';
@@ -252,9 +245,8 @@ sub _TicketFulltextIndexModuleCheck {
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         if ( $Row[0] > 100000 ) {
             if ( $Module =~ /RuntimeDB/ ) {
-                $Check = 'Failed';
-                $Message
-                    = "$Row[0] "
+                $Check   = 'Failed';
+                $Message = "$Row[0] "
                     . $Self->{LanguageObject}->Get(
                     'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'
                     );
@@ -266,9 +258,8 @@ sub _TicketFulltextIndexModuleCheck {
         }
         elsif ( $Row[0] > 50000 ) {
             if ( $Module =~ /RuntimeDB/ ) {
-                $Check = 'Critical';
-                $Message
-                    = "$Row[0] "
+                $Check   = 'Critical';
+                $Message = "$Row[0] "
                     . $Self->{LanguageObject}->Get(
                     'articles in your system. You should use the StaticDB backend for OTRS 2.3 and higher. See admin manual (Performance Tuning) for more information.'
                     );
@@ -279,9 +270,8 @@ sub _TicketFulltextIndexModuleCheck {
             }
         }
         else {
-            $Check = 'OK';
-            $Message
-                = $Self->{LanguageObject}->Get('You are using') . " \"$Module\", "
+            $Check   = 'OK';
+            $Message = $Self->{LanguageObject}->Get('You are using') . " \"$Module\", "
                 . $Self->{LanguageObject}->Get("that's fine for")
                 . " $Row[0] " . $Self->{LanguageObject}->Get('articles in your system.');
         }
@@ -311,17 +301,15 @@ sub _OpenTicketCheck {
         Limit      => 89999,
     );
     if ( $#TicketIDs > 89990 ) {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}->Get(
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}->Get(
             'You should not have more than 8000 open tickets in your system. You currently have over 89999! In case you want to improve your performance, close not needed open tickets.'
-            );
+        );
 
     }
     elsif ( $#TicketIDs > 10000 ) {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}
             ->Get('You should not have over 8000 open tickets in your system. You currently have ')
             . $#TicketIDs . '. '
             . $Self->{LanguageObject}
@@ -329,9 +317,8 @@ sub _OpenTicketCheck {
 
     }
     elsif ( $#TicketIDs > 8000 ) {
-        $Check = 'Critical';
-        $Message
-            = $Self->{LanguageObject}->Get(
+        $Check   = 'Critical';
+        $Message = $Self->{LanguageObject}->Get(
             'You should not have more than 8000 open tickets in your system. You currently have '
             )
             . $#TicketIDs
@@ -340,9 +327,8 @@ sub _OpenTicketCheck {
 
     }
     else {
-        $Check = 'OK';
-        $Message
-            = $Self->{LanguageObject}->Get('You have ')
+        $Check   = 'OK';
+        $Message = $Self->{LanguageObject}->Get('You have ')
             . $#TicketIDs
             . $Self->{LanguageObject}->Get(' open tickets in your system.');
     }
@@ -370,9 +356,8 @@ sub _FQDNConfigCheck {
 
     # Do we have set our FQDN?
     if ( $FQDN eq 'yourhost.example.com' ) {
-        $Data->{Check} = 'Failed';
-        $Data->{Comment}
-            = $Self->{LanguageObject}->Get(
+        $Data->{Check}   = 'Failed';
+        $Data->{Comment} = $Self->{LanguageObject}->Get(
             'Please configure your FQDN inside the SysConfig module. (currently the default setting'
             )
             . " '$FQDN' " . $Self->{LanguageObject}->Get('is enabled).');
@@ -425,10 +410,9 @@ sub _ConfigCheckTicketFrontendResponseFormat {
 
     my $Data = {
         Name        => $Self->{LanguageObject}->Get('ResponseFormatCheck'),
-        Description => $Self->{LanguageObject}
-            ->Get('Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.'),
-        Check   => 'Failed',
-        Comment => '',
+        Description => $Self->{LanguageObject}->Get('Check if Ticket::Frontend::ResponseFormat contains no $Data{""}.'),
+        Check       => 'Failed',
+        Comment     => '',
     };
 
     # Get the config
@@ -440,9 +424,7 @@ sub _ConfigCheckTicketFrontendResponseFormat {
         $Data->{Comment} = "\$Data{\"\"} " . $Self->{LanguageObject}->Get('was not found.');
     }
     else {
-        $Data->{Comment}
-            = $Self->{LanguageObject}
-            ->Get('Config option Ticket::Frontend::ResponseFormat cointains')
+        $Data->{Comment} = $Self->{LanguageObject}->Get('Config option Ticket::Frontend::ResponseFormat cointains')
             . " \$Data{\"\"}, \$QData{\"\"} "
             . $Self->{LanguageObject}->Get('should be used instand (see default setting).');
     }
@@ -515,9 +497,8 @@ sub _PackageDeployCheck {
     }
 
     if ($Message) {
-        $Data->{Check} = 'Critical';
-        $Data->{Comment}
-            = $Self->{LanguageObject}->Get('Packages not correctly installed') . ": $Message.",
+        $Data->{Check}   = 'Critical';
+        $Data->{Comment} = $Self->{LanguageObject}->Get('Packages not correctly installed') . ": $Message.",
     }
 
     return $Data;
@@ -531,7 +512,7 @@ sub _InvalidUserLockedTicketSearch {
         Name        => $Self->{LanguageObject}->Get('InvalidUserLockedTicketSearch'),
         Description => $Self->{LanguageObject}->Get('Search for invalid user with locked tickets.'),
         Check       => 'OK',
-        Comment => $Self->{LanguageObject}->Get('There are no invalid users with locked tickets.'),
+        Comment     => $Self->{LanguageObject}->Get('There are no invalid users with locked tickets.'),
     };
 
     # get all users (because there is no function to get all invalid users)
@@ -573,9 +554,8 @@ sub _InvalidUserLockedTicketSearch {
     }
 
     my $UserString = join ', ', values %LockedTicketUser;
-    $Data->{Comment}
-        = $Self->{LanguageObject}->Get('These invalid users have locked tickets') . ": $UserString";
-    $Data->{Check} = 'Critical';
+    $Data->{Comment} = $Self->{LanguageObject}->Get('These invalid users have locked tickets') . ": $UserString";
+    $Data->{Check}   = 'Critical';
 
     return $Data;
 }
@@ -586,11 +566,9 @@ sub _DefaultUserCheck {
     # set the default message
     my $Data = {
         Name        => $Self->{LanguageObject}->Get('DefaultUserCheck'),
-        Description => $Self->{LanguageObject}
-            ->Get('Check if root@localhost account has the default password.'),
-        Check   => 'OK',
-        Comment => $Self->{LanguageObject}
-            ->Get('There is no active root@localhost with default password.'),
+        Description => $Self->{LanguageObject}->Get('Check if root@localhost account has the default password.'),
+        Check       => 'OK',
+        Comment     => $Self->{LanguageObject}->Get('There is no active root@localhost with default password.'),
     };
 
     # retrieve list of valid users
@@ -616,9 +594,8 @@ sub _DefaultUserCheck {
     );
     return $Data if !$DefaultPass;
 
-    $Data->{Comment} = $Self->{LanguageObject}
-        ->Get("Change the password or invalidate the account 'root\@localhost'.");
-    $Data->{Check} = 'Critical';
+    $Data->{Comment} = $Self->{LanguageObject}->Get("Change the password or invalidate the account 'root\@localhost'.");
+    $Data->{Check}   = 'Critical';
 
     return $Data;
 }
@@ -629,9 +606,8 @@ sub _DefaultSOAPUserCheck {
     my $Data = {
         Name        => $Self->{LanguageObject}->Get('SOAPCheck'),
         Description => $Self->{LanguageObject}->Get('Check default SOAP credentials.'),
-        Comment     => $Self->{LanguageObject}
-            ->Get('You have not enabled SOAP or have set your own password.'),
-        Check => 'OK',
+        Comment     => $Self->{LanguageObject}->Get('You have not enabled SOAP or have set your own password.'),
+        Check       => 'OK',
     };
 
     my $SOAPUser     = $Self->{ConfigObject}->Get('SOAP::User')     || '';
@@ -639,9 +615,9 @@ sub _DefaultSOAPUserCheck {
 
     if ( $SOAPUser eq 'some_user' ) {
         if ( $SOAPPassword eq 'some_pass' || $SOAPPassword eq '' ) {
-            $Data->{Check}   = 'Critical';
-            $Data->{Comment} = $Self->{LanguageObject}
-                ->Get('Please set a strong password for SOAP::Password in SysConfig.');
+            $Data->{Check} = 'Critical';
+            $Data->{Comment}
+                = $Self->{LanguageObject}->Get('Please set a strong password for SOAP::Password in SysConfig.');
         }
     }
 

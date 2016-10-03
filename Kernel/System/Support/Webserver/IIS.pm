@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/Webserver/IIS.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -76,14 +76,12 @@ sub _PerlExCheck {
     my $Check   = '';
     my $Message = '';
     if ( $ENV{'GATEWAY_INTERFACE'} && $ENV{'GATEWAY_INTERFACE'} =~ /^CGI-PerlEx/i ) {
-        $Check = 'OK';
-        $Message
-            = $Self->{LanguageObject}->Get('PerlEx is in use') . " ($ENV{'GATEWAY_INTERFACE'}).";
+        $Check   = 'OK';
+        $Message = $Self->{LanguageObject}->Get('PerlEx is in use') . " ($ENV{'GATEWAY_INTERFACE'}).";
     }
     else {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}->Get('You should use PerlEx to increase your performance.');
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}->Get('You should use PerlEx to increase your performance.');
     }
     $Data = {
         Name        => 'PerlEx',

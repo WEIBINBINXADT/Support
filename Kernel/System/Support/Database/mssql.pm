@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Support/Database/mssql.pm - all required system information
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -249,16 +249,14 @@ sub _CurrentTimestampCheck {
     my $Range          = 10;
     $TimeDifference = $TimeApplicationServer - $TimeDatabaseServer;
     if ( ( $TimeDifference >= ( $Range * -1 ) ) && ( $TimeDifference <= $Range ) ) {
-        $Check = 'OK';
-        $Message
-            = $Self->{LanguageObject}->Get(
+        $Check   = 'OK';
+        $Message = $Self->{LanguageObject}->Get(
             'There is no difference between application server time and database server time.'
-            );
+        );
     }
     else {
-        $Check = 'Failed';
-        $Message
-            = $Self->{LanguageObject}->Get('There is a material difference (')
+        $Check   = 'Failed';
+        $Message = $Self->{LanguageObject}->Get('There is a material difference (')
             . $TimeDifference
             . $Self->{LanguageObject}->Get(' seconds) between application server (')
             . $TimeApplicationServer . $Self->{LanguageObject}->Get(') and database server (')
