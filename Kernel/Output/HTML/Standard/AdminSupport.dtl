@@ -6,10 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-# ---
-# - Supportmodule overview page
-# ---
-
+# Supportmodule overview page
 <!-- dtl:block:Overview -->
 <div class="MainBox AdminSupport ARIARoleMain LayoutFixedSidebar SidebarFirst">
     <h1>$Text{"Overview"}: $Text{"Support Assessment"}</h1>
@@ -129,10 +126,7 @@
 <!-- dtl:block:Overview -->
 
 
-# ---
-# - Supportmodule confidential page
-# ---
-
+# Supportmodule confidential page
 <!-- dtl:block:Confidential -->
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
     <h1>$Text{"Admin Support Info"}</h1>
@@ -180,11 +174,7 @@ $Include{"AdminSupportLicenseText"}
 </div>
 <!-- dtl:block:Confidential -->
 
-
-# ---
-# - Supportmodule sender and system information
-# ---
-
+# Supportmodule sender and system information
 <!-- dtl:block:SenderInformation -->
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
     <h1>$Text{"Admin Support Info"}</h1>
@@ -318,11 +308,7 @@ $Include{"AdminSupportLicenseText"}
 <!-- dtl:js_on_document_complete -->
 <!-- dtl:block:SenderInformation -->
 
-
-# ---
-# - Supportmodule benchmark result
-# ---
-
+# Supportmodule benchmark result
 <!-- dtl:block:BenchmarkResult -->
 <div class="Header">
     <h2>$Text{"Result"}: $Text{"$Data{"Head"}"}</h2>
@@ -363,11 +349,7 @@ $Include{"AdminSupportLicenseText"}
 </div>
 <!-- dtl:block:BenchmarkResult -->
 
-
-# ---
-# - Supportmodule Benchmark Result Init page
-# ---
-
+# Supportmodule Benchmark Result Init page
 <!-- dtl:block:BenchmarkResultInit -->
 <div class="MainBox AdminSupport ARIARoleMain LayoutFixedSidebar SidebarFirst">
     <h1>$Text{"Benchmark"}</h1>
