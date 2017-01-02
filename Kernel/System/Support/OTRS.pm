@@ -418,7 +418,7 @@ sub _ConfigCheckTicketFrontendResponseFormat {
     my $Config = $Self->{ConfigObject}->Get('Ticket::Frontend::ResponseFormat');
 
     # Does the SystemID contain non-digits?
-    if ( $Config !~ /\$Data{"/ ) {
+    if ( $Config !~ /\$Data\{"/ ) {
         $Data->{Check}   = 'OK';
         $Data->{Comment} = "\$Data{\"\"} " . $Self->{LanguageObject}->Get('was not found.');
     }
