@@ -111,7 +111,7 @@ sub Run {
             Data => {
                 SenderAdress     => $SenderAdress,
                 SenderSalutation => $User{UserSalutation},
-                SenderName       => $User{UserFirstname} . ' ' . $User{UserLastname},
+                SenderName       => $User{UserFullname},
             },
         );
 
@@ -147,7 +147,7 @@ sub Run {
                 Data => {
                     SenderAdress     => $SenderAdress,
                     SenderSalutation => $User{UserSalutation},
-                    SenderName       => $User{UserFirstname} . ' ' . $User{UserLastname},
+                    SenderName       => $User{UserFullname},
                 },
             );
 
